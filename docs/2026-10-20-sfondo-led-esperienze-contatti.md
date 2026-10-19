@@ -1,7 +1,7 @@
 # Sfondo "LED di rete", esperienze complete e scheda contatti
 
 Data: 2026-10-20
-Stato: in attesa di conferma, nessun codice ancora scritto
+Stato: approvato e implementato, con le proposte indicate in "Scelte aperte"
 Anteprima approvata: https://claude.ai/artifact/V3JAuS1pbLLNFN7iMDPrXG (link privato)
 
 ## Obiettivo
@@ -75,3 +75,13 @@ Prima di scrivere il codice vanno lette le guide pertinenti in `node_modules/nex
 2. **Numero di telefono.** È presente nel CV ma non nell'anteprima. Proposta: lasciarlo fuori dal sito pubblico.
 3. **Voto del diploma (78/100).** Proposta: non mostrarlo.
 4. **Separatore dei periodi.** Il sito usa "2024 — 2025" con il trattino lungo. Proposta: lasciarlo com'è per coerenza, oppure passare al trattino semplice "2024-2025".
+
+## Decisioni
+
+Approvate tutte le proposte: sfondo scritto in casa, niente telefono, niente voto del diploma, periodi con "—".
+
+Differenze rispetto al piano, emerse durante l'implementazione:
+
+- **Dati:** in `site.ts` le esperienze fuori dall'IT sono in un array separato, `otherExperience`, invece che in un campo dentro `experience`. I componenti risultano più semplici.
+- **Cambio tema:** il canvas osserva la classe di `<html>` con un `MutationObserver` invece di usare `resolvedTheme`. Così rilegge i colori dopo che `next-themes` ha applicato la classe.
+- **Nota di disponibilità nei contatti:** dice solo "Disponibile per nuove opportunità.", senza indicazioni di zona che il CV non riporta.

@@ -1,6 +1,7 @@
 import { ArrowRight, MapPin } from "lucide-react";
 
 import { GitHubIcon, LinkedInIcon } from "@/components/icons";
+import { NetworkLedsBackground } from "@/components/network-leds-background";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { site } from "@/lib/site";
@@ -8,11 +9,8 @@ import { cn } from "@/lib/utils";
 
 export function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden">
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] mask-[radial-gradient(ellipse_at_top,black_30%,transparent_70%)] bg-size-[48px_48px]"
-      />
+    <section id="top" className="relative isolate overflow-hidden">
+      <NetworkLedsBackground />
       <div className="mx-auto flex max-w-5xl flex-col items-start px-4 pt-24 pb-20 sm:px-6 sm:pt-32 sm:pb-28">
         <div className="flex flex-wrap items-center gap-2">
           {site.available && (
