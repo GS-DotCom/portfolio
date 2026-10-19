@@ -32,3 +32,11 @@ Next.js 16 (App Router, Turbopack) con React 19, TypeScript, Tailwind CSS v4 e c
 ## Convenzioni
 
 Il sito è in italiano (`lang="it"`): testi dell'interfaccia e commenti in italiano, nomi nel codice in inglese.
+
+## Documento di progetto prima di ogni nuova funzionalità
+
+Quando viene chiesto di sviluppare una nuova funzionalità o implementazione, **non scrivere codice subito**:
+
+1. Verifica la data e l'ora correnti con un comando di sistema (ad esempio `Get-Date` in PowerShell o `date` in Bash), senza basarti su date presunte.
+2. Scrivi un documento di progetto in `docs/`, nominato `YYYY-MM-DD-nome-funzione.md` (data corrente, nome della funzionalità in kebab-case). Il documento descrive cosa verrà fatto e sviluppato: obiettivo, file da creare o modificare, approccio tecnico ed eventuali scelte aperte.
+3. Fermati e attendi una conferma esplicita dell'utente prima di procedere con l'implementazione.
