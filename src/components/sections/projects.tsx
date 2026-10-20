@@ -31,7 +31,7 @@ export function Projects() {
       </p>
       <div className="grid gap-6 sm:grid-cols-2">
         {projects.map((project) => (
-          <Card key={project.title} className="transition-shadow hover:shadow-md">
+          <Card key={project.title} className="card-float">
             <CardHeader>
               <CardTitle className="text-lg">{project.title}</CardTitle>
               <CardDescription className="leading-6">

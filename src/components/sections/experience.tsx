@@ -21,7 +21,7 @@ export function Experience() {
               aria-hidden="true"
               className="absolute top-6.5 -left-[calc(1.5rem+4.5px)] size-2 rounded-full bg-foreground ring-4 ring-background sm:-left-[calc(2rem+4.5px)]"
             />
-            <Card className="transition-shadow hover:shadow-md">
+            <Card className="card-float">
               <CardHeader>
                 <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
                   <h3 className="font-heading text-lg font-medium">
