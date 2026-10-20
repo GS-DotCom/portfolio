@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Hammer } from "lucide-react";
 
 import { GitHubIcon } from "@/components/icons";
 import { Section } from "@/components/section";
@@ -12,20 +12,26 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { projects } from "@/lib/site";
+import { projects, projectsSection } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 export function Projects() {
+  // Con l'elenco vuoto il segnaposto resta comunque, per non lasciare una griglia vuota
+  const showComingSoon = projectsSection.showComingSoon || projects.length === 0;
+
   return (
     <Section
       id="projects"
       eyebrow="02 — Progetti"
-      title="Lavori selezionati"
+      title={projectsSection.title}
       className="bg-muted/40"
     >
+      <p className="-mt-4 mb-10 max-w-2xl leading-7 text-muted-foreground">
+        {projectsSection.intro}
+      </p>
       <div className="grid gap-6 sm:grid-cols-2">
         {projects.map((project) => (
-          <Card key={project.title} className="transition-shadow hover:shadow-md">
+          <Card key={project.title} className="card-float">
             <CardHeader>
               <CardTitle className="text-lg">{project.title}</CardTitle>
               <CardDescription className="leading-6">
@@ -69,6 +75,17 @@ export function Projects() {
             )}
           </Card>
         ))}
+        {showComingSoon && (
+          <Card className="min-h-48 justify-center border-2 border-dashed border-border bg-transparent text-center ring-0">
+            <CardHeader className="justify-items-center gap-2">
+              <Hammer aria-hidden className="mb-2 size-6 text-muted-foreground" />
+              <CardTitle className="text-lg">{projectsSection.comingSoon.title}</CardTitle>
+              <CardDescription className="max-w-xs leading-6">
+                {projectsSection.comingSoon.description}
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        )}
       </div>
     </Section>
   );

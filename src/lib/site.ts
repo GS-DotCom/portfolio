@@ -57,25 +57,19 @@ export type Project = {
   repo?: string;
 };
 
+export const projectsSection = {
+  title: "App e progetti",
+  intro: "Applicazioni e web app che sviluppo, dall'idea al rilascio.",
+  // Scheda segnaposto in fondo alla griglia: da spegnere quando la sezione sarà piena
+  showComingSoon: true,
+  comingSoon: {
+    title: "Nuovi progetti in arrivo",
+    description: "Sto lavorando alle prossime applicazioni: presto le trovi qui.",
+  },
+};
+
+// Progetti personali: le attività di lavoro sono nella sezione Esperienza
 export const projects: Project[] = [
-  {
-    title: "Gestionale per impianti sportivi",
-    description:
-      "Applicazione web sviluppata in team presso T.S.I Group per la gestione di impianti sportivi, in ambiente .NET.",
-    tags: ["ASP.NET Core MVC", "C#", "Razor", "Bootstrap"],
-  },
-  {
-    title: "Migrazione da Access a SQL Server",
-    description:
-      "Porting dei database del gestionale da Microsoft Access a SQL Server, con migrazione, normalizzazione e verifica dell'integrità dei dati.",
-    tags: ["SQL Server", "Microsoft Access"],
-  },
-  {
-    title: "Rete intranet aziendale",
-    description:
-      "Gestione della rete intranet di Romeo Ficacci S.r.l. e configurazione di firewall, switch e armadi server.",
-    tags: ["Networking", "Firewall", "Hardware"],
-  },
   {
     title: "Portfolio personale",
     description:
