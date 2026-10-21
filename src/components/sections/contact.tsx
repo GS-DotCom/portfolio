@@ -1,76 +1,116 @@
-import { Mail } from "lucide-react";
+import { Palette, Puzzle, Users, type LucideIcon } from "lucide-react";
+import Image from "next/image";
 
 import { CopyEmailButton } from "@/components/copy-email-button";
-import { GitHubIcon, LinkedInIcon } from "@/components/icons";
+import { Reveal } from "@/components/reveal";
 import { Section } from "@/components/section";
-import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { contact, site } from "@/lib/site";
+import { contact, site, type Strength } from "@/lib/site";
 import { cn } from "@/lib/utils";
+
+const icons: Record<Strength["icon"], LucideIcon> = {
+  "problem-solving": Puzzle,
+  team: Users,
+  design: Palette,
+};
+
+const colors: Record<Strength["color"], string> = {
+  lilac: "bg-quote-lilac",
+  blue: "bg-quote-blue",
+  violet: "bg-quote-violet",
+};
+
+// Il primo riquadro occupa tutta l'altezza, gli altri due si dividono la colonna di destra
+const placement = [
+  "lg:row-span-2",
+  "lg:col-start-3 lg:row-start-1",
+  "lg:col-start-3 lg:row-start-2",
+];
+
+const linkClass = "w-fit font-mono text-[1.05rem] font-semibold transition-colors hover:text-cyan";
+
+// Logo PNG del social a sinistra del nome
+const socialClass = "flex items-center gap-2.5";
+
+function StrengthCard({ strength, className }: { strength: Strength; className?: string }) {
+  const Icon = icons[strength.icon];
+  return (
+    <figure className={cn("relative flex flex-col p-7 text-white", colors[strength.color], className)}>
+      <div className="flex items-start justify-between">
+        <span aria-hidden="true" className="h-12 font-serif text-[6.5rem] leading-[0.9] font-bold text-white/45">
+          &rdquo;
+        </span>
+        <span className="flex size-[4.75rem] items-center justify-center rounded-full border-[3px] border-white bg-black/15">
+          <Icon aria-hidden="true" strokeWidth={1.5} className="size-8" />
+        </span>
+      </div>
+      <blockquote className="mt-8 text-[0.95rem] leading-5">
+        <p>{strength.text}</p>
+      </blockquote>
+      <figcaption className="mt-6">
+        <p className="text-base font-bold">- {strength.title}</p>
+        <p className="text-sm font-medium">{strength.source}</p>
+      </figcaption>
+    </figure>
+  );
+}
 
 export function Contact() {
   return (
-    <Section
-      id="contact"
-      eyebrow="04 — Contatti"
-      title="Lavoriamo insieme"
-      className="bg-muted/40"
-    >
-      <Card className="py-10 sm:py-12">
-        <CardContent className="flex flex-col items-start gap-8 sm:px-10">
-          <p className="max-w-xl text-lg text-pretty text-muted-foreground">{contact.intro}</p>
+    <Section id="contact" className="bg-contact">
+      <div className="mx-auto grid max-w-[1420px] lg:grid-cols-[1fr_364px_444px] lg:grid-rows-[284px_auto]">
+        <Reveal className="px-4 py-14 sm:px-6 lg:row-span-2 lg:py-12 lg:pr-10 lg:pl-0">
+          <h2 id="contact-title" className="max-w-[21rem] font-heading text-[2.1rem] leading-[1.3] font-bold">
+            {contact.title}
+          </h2>
+          <p className="mt-10 max-w-[22rem] font-mono text-[1.05rem] leading-[1.4] font-semibold">
+            {contact.intro}
+          </p>
 
-          <div className="grid gap-1.5">
-            <p className="font-mono text-xs tracking-wide text-muted-foreground uppercase">
-              {contact.emailLabel}
-            </p>
-            {/* L'indirizzo si seleziona con un clic, utile se la copia automatica non è disponibile */}
-            <p className="text-xl font-medium tracking-tight wrap-anywhere select-all sm:text-3xl">
-              {site.email}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
+          <p className="mt-16 lg:mt-28">
             <a
               href={`mailto:${site.email}?subject=${encodeURIComponent(contact.emailSubject)}`}
-              className={cn(buttonVariants({ size: "lg" }))}
+              className="marker-underline font-mono text-lg font-medium wrap-anywhere [--marker:#8d47de] sm:text-[1.4rem]"
             >
-              <Mail data-icon="inline-start" />
-              Scrivimi
+              {site.email}
             </a>
-            <CopyEmailButton email={site.email} />
+          </p>
+          <ul className="mt-4 flex flex-col gap-2">
+            <li>
+              <CopyEmailButton email={site.email} className={linkClass} />
+            </li>
             {site.socials.linkedin && (
-              <a
-                href={site.socials.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
-              >
-                <LinkedInIcon data-icon="inline-start" />
-                LinkedIn
-              </a>
+              <li>
+                <a
+                  href={site.socials.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(linkClass, socialClass)}
+                >
+                  <Image src="/socials/linkedin.png" alt="" width={20} height={20} className="size-5" />
+                  LinkedIn
+                </a>
+              </li>
             )}
             {site.socials.github && (
-              <a
-                href={site.socials.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
-              >
-                <GitHubIcon data-icon="inline-start" />
-                GitHub
-              </a>
+              <li>
+                <a
+                  href={site.socials.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(linkClass, socialClass)}
+                >
+                  <Image src="/socials/github.png" alt="" width={20} height={20} className="size-5" />
+                  GitHub
+                </a>
+              </li>
             )}
-          </div>
+          </ul>
+        </Reveal>
 
-          {site.available && (
-            <p className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span aria-hidden="true" className="size-2 rounded-full bg-emerald-500" />
-              Disponibile per nuove opportunità.
-            </p>
-          )}
-        </CardContent>
-      </Card>
+        {contact.strengths.map((strength, index) => (
+          <StrengthCard key={strength.title} strength={strength} className={placement[index]} />
+        ))}
+      </div>
     </Section>
   );
 }

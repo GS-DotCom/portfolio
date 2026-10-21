@@ -20,12 +20,15 @@ Next.js 16 (App Router, Turbopack) con React 19, TypeScript, Tailwind CSS v4 e c
 
 ## Architettura
 
-È un sito a pagina unica. `src/app/page.tsx` compone header, le sezioni in `src/components/sections/` e footer.
+È un sito a pagina unica, con stile e struttura ripresi da [tamalsen.dev](https://tamalsen.dev/) (vedi `docs/2026-10-20-restyling-stile-tamalsen.md`; il materiale di riferimento è in `references/`, solo in locale perché escluso da git). `src/app/page.tsx` compone l'header e le sezioni in `src/components/sections/`: Hero, Competenze, Progetti, Esperienza, Contatti. La fascia dei contatti fa anche da footer.
 
-- **Contenuti centralizzati:** tutti i testi (dati personali, navigazione, competenze, progetti, esperienze) stanno in `src/lib/site.ts`. Per cambiare un contenuto si modifica quel file, non i componenti. Un link social vuoto nasconde il relativo pulsante.
-- **Navigazione ad ancore:** `navItems` punta agli `id` delle sezioni (`#about`, `#projects`, …). Ogni sezione usa il wrapper `src/components/section.tsx`, che imposta `id`, `aria-labelledby` e `scroll-mt-16` per compensare l'header fisso: un nuovo `id` va tenuto allineato con `navItems`.
-- **Server e client:** le sezioni sono Server Components. Sono client solo `theme-provider`, `mode-toggle`, `mobile-nav` e alcuni componenti in `ui/`.
-- **Tema:** `next-themes` con strategia a classe (`.dark`), impostato in `layout.tsx`. I colori sono variabili CSS in `globals.css`.
+- **Contenuti centralizzati:** tutti i testi (dati personali, navigazione, hero, competenze, progetti, esperienze, contatti) stanno in `src/lib/site.ts`. Per cambiare un contenuto si modifica quel file, non i componenti. Un link social vuoto nasconde il relativo link. Per aggiungere un progetto si aggiunge un oggetto a `projects`; le schede "Progetto in arrivo" si spengono con `projectsSection.showPlaceholders`.
+- **Navigazione ad ancore:** `navItems` punta agli `id` delle sezioni (`#home`, `#expertise`, `#projects`, …), e il numero in apice segue l'ordine dell'elenco. Ogni sezione usa `Section` di `src/components/section.tsx`, che imposta `id`, `aria-labelledby` (`${id}-title`) e `scroll-mt-20` per compensare l'header fisso. Il titolo lo disegna la sezione, di solito con `SectionTitle`. Un nuovo `id` va tenuto allineato con `navItems`.
+- **Server e client:** le sezioni sono Server Components. Sono client solo `header-shell`, `mobile-nav`, `hero-scene` (caricata da `hero-scene-loader` con `ssr: false`), `custom-cursor`, `reveal`, `project-grid`, `copy-email-button` e alcuni componenti in `ui/`.
+- **Tema:** il sito è solo scuro (classe `dark` fissa su `<html>`, nessun `next-themes`). I colori, campionati dal riferimento, sono variabili CSS in `:root` di `globals.css` ed esposti a Tailwind come `bg-bar`, `text-cyan`, `bg-quote-blue` e simili.
+- **Font:** Poppins (titoli e testi) e Roboto Mono (menu e testi "in codice"), da `next/font/google` in `layout.tsx`.
+- **Scena 3D dell'hero:** `three` in `hero-scene.tsx`. Si ferma fuori schermo, con la scheda nascosta e con movimento ridotto. Le animazioni all'ingresso usano `Reveal` (stili `[data-reveal]` in `globals.css`), che senza JavaScript o con movimento ridotto lascia il contenuto visibile.
+- **Screenshot del portfolio:** `public/projects/portfolio-desktop.png` è una cattura del sito stesso, usata dalla scheda del portfolio. Va rifatta quando cambia la hero.
 - **`cn`:** arriva dal pacchetto ufficiale `cn` di shadcn (sostituisce `clsx` + `tailwind-merge`). `src/lib/utils.ts` lo riesporta; i componenti in `src/components/ui/` lo importano direttamente da `"cn"`, come li genera la CLI di shadcn. Nuovi componenti UI si aggiungono con `npx shadcn add <nome>`.
 - **Icone:** `lucide-react` non include più le icone dei brand, quindi GitHub e LinkedIn sono SVG in `src/components/icons.tsx`.
 
