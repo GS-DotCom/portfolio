@@ -1,24 +1,13 @@
 import { HeaderShell } from "@/components/header-shell";
 import { MobileNav } from "@/components/mobile-nav";
-import { navItems, site } from "@/lib/site";
+import { navItems } from "@/lib/site";
 
-export function Logo() {
-  return (
-    <a href="#home" className="font-mono text-xl font-medium tracking-tight text-cyan sm:text-[1.6rem]">
-      {site.logo}.
-      <span aria-hidden="true" className="text-lilac motion-safe:animate-caret">
-        _
-      </span>
-    </a>
-  );
-}
-
+// Il menu è centrato; su mobile resta solo il pulsante del pannello, a destra
 export function SiteHeader() {
   return (
     <HeaderShell>
-      <div className="flex h-20 items-center justify-between px-4 transition-[height] duration-300 group-data-[scrolled=false]/header:lg:h-34 sm:px-11">
-        <Logo />
-        <nav aria-label="Principale" className="absolute left-1/2 hidden -translate-x-1/2 lg:block">
+      <div className="flex h-20 items-center justify-end px-4 transition-[height] duration-300 group-data-[scrolled=false]/header:lg:h-34 sm:px-11 lg:justify-center">
+        <nav aria-label="Principale" className="hidden lg:block">
           <ol className="flex items-center gap-12">
             {navItems.map((item, index) => (
               <li key={item.href}>

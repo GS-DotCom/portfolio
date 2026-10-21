@@ -11,7 +11,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { navItems, site } from "@/lib/site";
+import { navItems } from "@/lib/site";
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
@@ -26,9 +26,7 @@ export function MobileNav() {
       </SheetTrigger>
       <SheetContent side="right" className="bg-background">
         <SheetHeader>
-          <SheetTitle className="font-mono text-cyan">
-            {site.logo}.<span className="text-lilac">_</span>
-          </SheetTitle>
+          <SheetTitle className="font-mono text-cyan">Menu</SheetTitle>
         </SheetHeader>
         <nav aria-label="Principale" className="px-4">
           <ol className="flex flex-col">
