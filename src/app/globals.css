@@ -49,11 +49,10 @@
   --color-faint: var(--faint);
 }
 
-/* Schede fluttuanti, rivelazione all'ingresso e cursore del logo */
+/* Schede fluttuanti, rivelazione all'ingresso e indicatore di scorrimento */
 @theme {
   --ease-float: cubic-bezier(0.22, 1, 0.36, 1);
   --animate-card-breathe: card-breathe 4s ease-in-out 500ms infinite;
-  --animate-caret: caret 1.1s steps(1) infinite;
   --animate-scroll-hint: scroll-hint 1.8s ease-in-out infinite;
 
   @keyframes card-breathe {
@@ -63,16 +62,6 @@
     }
     50% {
       transform: translateY(-3px);
-    }
-  }
-
-  @keyframes caret {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0;
     }
   }
 
@@ -112,7 +101,7 @@
   --input: rgb(255 255 255 / 15%);
   --ring: #6ed5ee;
   --radius: 0.625rem;
-  --hero: #15212f;
+  --hero: #0c0d12;
   --contact: #0e0e0e;
   --cyan: #6ed5ee;
   --lilac: #b181e9;

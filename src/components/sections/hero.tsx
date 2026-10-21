@@ -1,27 +1,77 @@
-import { HeroSceneLoader } from "@/components/hero-scene-loader";
+import Image from "next/image";
+
+import { HeroWaves } from "@/components/hero-waves";
+import { GitHubIcon, LinkedInIcon } from "@/components/icons";
 import { Section } from "@/components/section";
 import { hero, site } from "@/lib/site";
+
+const initials = site.name
+  .split(" ")
+  .map((word) => word[0])
+  .join("");
+
+// Un link social vuoto in site.ts nasconde la relativa icona
+const socialLinks = [
+  { label: "GitHub", href: site.socials.github, Icon: GitHubIcon },
+  { label: "LinkedIn", href: site.socials.linkedin, Icon: LinkedInIcon },
+].filter((link) => link.href);
 
 export function Hero() {
   return (
     <Section
       id="home"
-      className="relative isolate flex min-h-[max(100svh,720px)] flex-col overflow-hidden bg-[linear-gradient(to_bottom,var(--hero)_0%,var(--hero)_55%,var(--background)_100%)]"
+      className="relative isolate flex min-h-[max(100svh,720px)] flex-col overflow-hidden bg-[linear-gradient(to_bottom,var(--hero)_0%,var(--hero)_70%,var(--background)_100%)]"
     >
       <div className="absolute inset-0 -z-10">
-        <HeroSceneLoader />
-        {/* Foschia calda all'orizzonte e passaggio morbido verso il resto della pagina */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_30%_at_50%_82%,rgb(255_108_42/0.10),transparent)]" />
-        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-b from-transparent to-background" />
+        <HeroWaves />
+        {/* Passaggio morbido verso il resto della pagina */}
+        <div className="absolute inset-x-0 bottom-0 h-1/4 bg-linear-to-b from-transparent to-background" />
       </div>
 
       <div className="flex flex-1 flex-col items-center justify-center px-4 pt-20 pb-48 text-center">
-        <h1
-          id="home-title"
-          className="font-heading text-[16vw] leading-[0.95] font-bold tracking-[0.03em] text-white uppercase [text-shadow:0_6px_40px_rgb(0_0_0/0.35)] sm:text-[9.2vw] sm:leading-none sm:whitespace-nowrap 2xl:text-[10.5rem]"
-        >
-          {site.name}
-        </h1>
+        {/* Foto e social stanno sopra il nome, allineati alla sua prima lettera come nel riferimento */}
+        <div className="flex flex-col items-start">
+          <div className="mb-5 flex items-center gap-5">
+            {site.photo ? (
+              <Image
+                src={site.photo}
+                alt={`Foto di ${site.name}`}
+                width={160}
+                height={160}
+                priority
+                className="size-16 rounded-full object-cover sm:size-20"
+              />
+            ) : (
+              <span
+                aria-hidden="true"
+                className="flex size-16 items-center justify-center rounded-full bg-[#d9d9d9] font-heading text-xl font-semibold text-[#3b3a40] sm:size-20 sm:text-2xl"
+              >
+                {initials}
+              </span>
+            )}
+            <ul className="flex items-center gap-3">
+              {socialLinks.map(({ label, href, Icon }) => (
+                <li key={label}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={label}
+                    className="block text-white transition-colors hover:text-lilac"
+                  >
+                    <Icon className="size-6" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <h1
+            id="home-title"
+            className="text-left font-heading text-5xl leading-[1.05] font-bold text-white [text-shadow:0_6px_40px_rgb(0_0_0/0.45)] sm:text-7xl sm:whitespace-nowrap xl:text-8xl"
+          >
+            {site.name}
+          </h1>
+        </div>
         <p className="mt-6 font-mono text-sm font-medium tracking-[0.2em] text-white uppercase sm:mt-10 sm:text-xl">
           {hero.subtitle}
         </p>

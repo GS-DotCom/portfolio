@@ -2,12 +2,12 @@
 
 export const site = {
   name: "Giuliano Simone",
-  // Logo in stile codice dell'header: "GiulianoSimone._"
-  logo: "GiulianoSimone",
   role: "Sviluppatore Web .NET e Sistemista IT",
   location: "Roma, Italia",
   available: true,
   email: "tarquinioprisco96@gmail.com",
+  // Foto rotonda della hero, da mettere in public/ (es. "/foto.jpg"). Vuota mostra le iniziali.
+  photo: "/pesso.jpg",
   description:
     "Sviluppo applicazioni web in ambiente .NET e mi occupo di reti e sistemi aziendali. Cerco un'opportunità stabile in cui crescere e contribuire a progetti concreti.",
   socials: {
@@ -21,15 +21,16 @@ export const navItems = [
   { label: "home", href: "#home" },
   { label: "competenze", href: "#expertise" },
   { label: "progetti", href: "#projects" },
+  { label: "AI", href: "#ai" },
   { label: "esperienza", href: "#experience" },
   { label: "contatti", href: "#contact" },
 ];
 
 export const hero = {
-  subtitle: "Sviluppatore Web .NET e Sistemista IT.",
+  subtitle: "Sviluppatore Web .NET e Sistemista z/OS.",
   // Al posto di "As featured in" del riferimento
   technologiesLabel: "Tecnologie che uso",
-  technologies: ["C#", ".NET", "SQL Server", "JavaScript", "Cisco"],
+  technologies: ["C#", ".NET", "SQL Server", "JavaScript", "HTML", "CSS", "IBM"],
 };
 
 // Presentazione estesa: oggi non compare nel sito, la teniamo per usi futuri
@@ -120,6 +121,55 @@ export const projects: Project[] = [
   { id: "in-arrivo-5", title: "Progetto in arrivo", category: "Web app", size: "small", cover: "browser", placeholder: true },
 ];
 
+// Sezione sul vibe coding: come nasce questo sito e con quali strumenti
+export const aiSection = {
+  titleLines: ["Vibe coding", "con Claude"],
+  intro:
+    "Sto imparando a sviluppare in vibe coding: descrivo in italiano quello che voglio ottenere e lo costruisco insieme a un assistente AI. Uso Claude di Anthropic tramite Claude Code, dentro l'editor Cursor. Questo portfolio è il primo progetto nato così.",
+  stepsTitle: "Workflow",
+  steps: [
+    {
+      title: "Descrivo l'idea",
+      text: "Spiego cosa voglio, spesso partendo da uno screenshot o da un sito di riferimento.",
+    },
+    {
+      title: "Prima il progetto",
+      text: "Claude scrive un documento con obiettivo, file da toccare e scelte aperte. Si parte solo dopo la mia conferma.",
+    },
+    {
+      title: "Codice e verifica",
+      text: "Claude scrive il codice, lancia lint e controllo dei tipi e verifica il risultato nel browser, su desktop e su mobile.",
+    },
+    {
+      title: "Rivedo e decido",
+      text: "Guardo l'anteprima, chiedo ritocchi e approvo. Il codice resta mio: lo leggo, lo capisco e lo mantengo.",
+    },
+  ],
+  // Finto terminale decorativo: "prompt" è la richiesta, "reply" la risposta, "ok" un controllo superato
+  terminal: [
+    { kind: "prompt", text: "aggiungi una sezione AI al menu" },
+    { kind: "reply", text: "Scrivo prima il documento di progetto in docs/." },
+    { kind: "reply", text: "Fatto. Mi confermi il piano?" },
+    { kind: "prompt", text: "confermo" },
+    { kind: "reply", text: "Creo sections/ai.tsx e aggiorno il menu…" },
+    { kind: "ok", text: "lint e type-check superati" },
+    { kind: "ok", text: "controllata nel browser a 1440 e 390 px" },
+  ] satisfies { kind: "prompt" | "reply" | "ok"; text: string }[],
+  stackTitle: "Tecnologie utilizzate per questo sito",
+  stack: [
+    { name: "Next.js 16", text: "App Router, Server Components e Turbopack" },
+    { name: "React 19", text: "Interfaccia a componenti" },
+    { name: "TypeScript", text: "Tipi su tutto il codice" },
+    { name: "Tailwind CSS 4", text: "Stili e tema scuro" },
+    { name: "shadcn/ui e Base UI", text: "Componenti accessibili" },
+    { name: "Canvas 2D", text: "Il nastro animato della hero" },
+    { name: "Claude Code", text: "L'assistente che scrive il codice con me" },
+    { name: "Cursor", text: "L'editor in cui lavoro" },
+    { name: "Playwright", text: "Controllo del sito nel browser" },
+    { name: "Git e GitHub", text: "Versioni e pull request" },
+  ],
+};
+
 export type Experience = {
   role: string;
   company: string;
@@ -185,10 +235,20 @@ export const otherExperience: Experience[] = [
 
 export const education = [
   {
+    course: "z/OS System Administrator",
+    school: "Corso FORMATEMP",
+    period: "2026",
+    description:
+      "Corso incentrato sulla figura di sistemista Mainframe IBM con particolare attenzione sul sistema operativo z/OS. Ho avuto modo di lavorare su dataset e librerie con ISPF e TSO, elaborazione di JOB batch in JCL e" +
+      "gestendo i job con JES2 e SDSF. Ho approfondito l'utilizzo di DB2 e la sicurezza degli accessi con RACF, diagnostica di log e dump con IPCS e automazione con REXX e CLIST, con un'introduzione a CICS." +
+      "Fine corso dedicato a COBOL con 3 giornate intensive di programmazione.",
+    topics: ["z/OS", "Mainframe IBM", "ISPF", "TSO", "MVS", "JCL", "JES2", "SDSF", "DB2", "SQL", "RACF", "IPCS", "REXX", "COBOL", "CLIST", "CICS", "Protocolli di rete TCP/IP"],
+  },
+  {
     course: "Analista Programmatore",
-    school: "Istituto CEFI",
+    school: "Istituto Informatico CEFI",
     period: "2022 — 2023",
-    description: "Corso di 500 ore.",
+    description: "Corso di 500 ore. Buona conoscenza di programmazione in C, C++, Java, JavaScript, C# e SQL Server.",
     topics: ["C", "C++", "Java", "JavaScript", "C#", "SQL Server", "MySQL"],
   },
   {

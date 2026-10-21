@@ -1,3 +1,4 @@
+import { Ai } from "@/components/sections/ai";
 import { Contact } from "@/components/sections/contact";
 import { Experience } from "@/components/sections/experience";
 import { Expertise } from "@/components/sections/expertise";
@@ -13,6 +14,7 @@ export default function Home() {
         <Hero />
         <Expertise />
         <Projects />
+        <Ai />
         <Experience />
         <Contact />
       </main>
