@@ -1,13 +1,13 @@
-// Tutti i contenuti del portfolio. I link social vuoti nascondono i relativi pulsanti.
+// Tutti i contenuti del portfolio. I link social vuoti nascondono i relativi link.
 
 export const site = {
   name: "Giuliano Simone",
-  initials: "GS",
+  // Logo in stile codice dell'header: "GiulianoSimone._"
+  logo: "GiulianoSimone",
   role: "Sviluppatore Web .NET e Sistemista IT",
   location: "Roma, Italia",
   available: true,
   email: "tarquinioprisco96@gmail.com",
-  year: 2026,
   description:
     "Sviluppo applicazioni web in ambiente .NET e mi occupo di reti e sistemi aziendali. Cerco un'opportunità stabile in cui crescere e contribuire a progetti concreti.",
   socials: {
@@ -16,66 +16,108 @@ export const site = {
   },
 };
 
+// Il numero in apice (01, 02, …) segue l'ordine dell'elenco
 export const navItems = [
-  { label: "Chi sono", href: "#about" },
-  { label: "Progetti", href: "#projects" },
-  { label: "Esperienza", href: "#experience" },
-  { label: "Contatti", href: "#contact" },
+  { label: "home", href: "#home" },
+  { label: "competenze", href: "#expertise" },
+  { label: "progetti", href: "#projects" },
+  { label: "esperienza", href: "#experience" },
+  { label: "contatti", href: "#contact" },
 ];
 
+export const hero = {
+  subtitle: "Sviluppatore Web .NET e Sistemista IT.",
+  // Al posto di "As featured in" del riferimento
+  technologiesLabel: "Tecnologie che uso",
+  technologies: ["C#", ".NET", "SQL Server", "JavaScript", "Cisco"],
+};
+
+// Presentazione estesa: oggi non compare nel sito, la teniamo per usi futuri
 export const about = {
   paragraphs: [
     "Sono uno sviluppatore web e sistemista IT di Roma. Dopo il corso da Analista Programmatore all'Istituto CEFI ho lavorato come sviluppatore .NET junior, contribuendo a un gestionale per impianti sportivi e alla migrazione dei suoi database da Microsoft Access a SQL Server.",
     "Come sistemista ho poi lavorato sull'infrastruttura: supporto tecnico ai reparti aziendali, gestione della rete intranet, configurazione di firewall e interventi su switch e armadi server. Oggi sto preparando la certificazione Cisco CCNA.",
     "Ho una formazione artistica, tra il diploma da grafico pubblicitario e i tre anni alla Scuola del Fumetto Comix, che mi porta a curare anche l'aspetto visivo di quello che realizzo. Lavoro bene sia in team sia in autonomia.",
   ],
-  skills: [
-    {
-      group: "Sviluppo",
-      items: ["C#", "ASP.NET Core MVC", "Razor", "JavaScript", "HTML", "CSS", "Bootstrap", "WPF"],
-    },
-    {
-      group: "Database",
-      items: ["SQL Server", "MySQL", "Microsoft Access"],
-    },
-    {
-      group: "Sistemi e reti",
-      items: ["Networking", "Firewall", "Switch", "Supporto tecnico", "CCNA (in corso)"],
-    },
-    {
-      group: "Lingue",
-      items: ["Italiano (madrelingua)", "Inglese (B2)"],
-    },
-  ],
 };
 
-export type Project = {
+export type ExpertiseItem = {
+  icon: "web" | "database" | "network";
+  // La prima riga del titolo è sottolineata con il colore indicato
   title: string;
+  subtitle: string;
+  color: "pink" | "blue" | "orange";
   description: string;
-  tags: string[];
+};
+
+export const expertise = {
+  title: "Le mie competenze",
+  items: [
+    {
+      icon: "web",
+      title: "Sviluppo Web",
+      subtitle: ".NET e C#",
+      color: "pink",
+      description:
+        "Applicazioni web in ASP.NET Core MVC, Razor e C#, con JavaScript, Bootstrap e WPF per il desktop.",
+    },
+    {
+      icon: "database",
+      title: "Database",
+      subtitle: "SQL Server",
+      color: "blue",
+      description:
+        "Database relazionali su SQL Server e MySQL. Ho migrato un gestionale da Access a SQL Server.",
+    },
+    {
+      icon: "network",
+      title: "Sistemi e reti",
+      subtitle: "Firewall, CCNA",
+      color: "orange",
+      description:
+        "Networking, firewall, switch e armadi server. Sto preparando la certificazione Cisco CCNA.",
+    },
+  ] satisfies ExpertiseItem[],
+};
+
+export type ProjectCategory = "Web app" | "App";
+
+export type Project = {
+  id: string;
+  title: string;
+  category: ProjectCategory;
+  // Le schede "large" occupano due colonne, come nel mosaico del riferimento
+  size: "small" | "large";
+  // Immagine in public/ oppure copertina astratta per i segnaposto
+  image?: string;
+  cover?: "browser" | "phone";
+  placeholder?: boolean;
   href?: string;
-  repo?: string;
 };
 
 export const projectsSection = {
-  title: "App e progetti",
-  intro: "Applicazioni e web app che sviluppo, dall'idea al rilascio.",
-  // Scheda segnaposto in fondo alla griglia: da spegnere quando la sezione sarà piena
-  showComingSoon: true,
-  comingSoon: {
-    title: "Nuovi progetti in arrivo",
-    description: "Sto lavorando alle prossime applicazioni: presto le trovi qui.",
-  },
+  titleLines: ["I miei", "Progetti"],
+  intro: site.description,
+  filterLabel: "Filtra per",
+  allLabel: "Tutti",
+  categories: ["Web app", "App"] satisfies ProjectCategory[],
+  // Schede "Progetto in arrivo": da spegnere quando arriveranno i progetti veri
+  showPlaceholders: true,
 };
 
-// Progetti personali: le attività di lavoro sono nella sezione Esperienza
 export const projects: Project[] = [
   {
+    id: "portfolio",
     title: "Portfolio personale",
-    description:
-      "Questo sito: una pagina unica, responsive e con tema chiaro e scuro, per presentare il mio percorso.",
-    tags: ["Next.js", "TypeScript", "Tailwind CSS"],
+    category: "Web app",
+    size: "small",
+    image: "/projects/portfolio-desktop.png",
   },
+  { id: "in-arrivo-1", title: "Progetto in arrivo", category: "App", size: "small", cover: "phone", placeholder: true },
+  { id: "in-arrivo-2", title: "Progetto in arrivo", category: "Web app", size: "small", cover: "browser", placeholder: true },
+  { id: "in-arrivo-3", title: "Progetto in arrivo", category: "Web app", size: "large", cover: "browser", placeholder: true },
+  { id: "in-arrivo-4", title: "Progetto in arrivo", category: "App", size: "small", cover: "phone", placeholder: true },
+  { id: "in-arrivo-5", title: "Progetto in arrivo", category: "Web app", size: "small", cover: "browser", placeholder: true },
 ];
 
 export type Experience = {
@@ -86,7 +128,12 @@ export type Experience = {
   tags?: string[];
 };
 
-// Ruoli in ambito IT: schede sulla linea del tempo
+export const experienceSection = {
+  titleLines: ["Esperienza", "Professionale"],
+  otherTitle: "Formazione e altre esperienze",
+};
+
+// Ruoli in ambito IT: barre della prima fisarmonica
 export const experience: Experience[] = [
   {
     role: "Sistemista IT junior",
@@ -126,21 +173,8 @@ export const experience: Experience[] = [
   },
 ];
 
-// Esperienze fuori dall'ambito IT: elenco compatto
+// Esperienze fuori dall'ambito IT
 export const otherExperience: Experience[] = [
-  {
-    role: "Preparatore auto",
-    company: "Car Lovers Renault Tiburtina",
-    period: "2024",
-    description:
-      "Due mesi di preparazione dei veicoli alla consegna, a contatto con officina, carrozzeria e area lavaggio, con il controllo finale prima della consegna al cliente.",
-  },
-  {
-    role: "Picker e confezionamento",
-    company: "StanHome",
-    period: "2023 — 2024",
-    description: "Picking e confezionamento di prodotti per la cura della persona e della casa.",
-  },
   {
     role: "Portalettere",
     company: "Poste Italiane",
@@ -162,18 +196,44 @@ export const education = [
     school: "Scuola del Fumetto Comix",
     period: "2015 — 2017",
     description: "Corso triennale nelle sedi di Roma Garbatella e Roma Colli Albani.",
-  },
-  {
-    course: "Grafico pubblicitario",
-    school: "Liceo Artistico Tivoli",
-    period: "2010 — 2015",
-    description: "Diploma di scuola secondaria di secondo grado.",
-  },
+  }
 ];
 
+export type Strength = {
+  icon: "problem-solving" | "team" | "design";
+  color: "lilac" | "blue" | "violet";
+  text: string;
+  title: string;
+  source: string;
+};
+
 export const contact = {
+  title: "Disponibile per nuove opportunità",
   intro:
     "Stai cercando qualcuno per il tuo team o hai un progetto da propormi? Scrivimi, sarò felice di parlarne.",
-  emailLabel: "Email per proposte",
   emailSubject: "Proposta di lavoro",
+  // Al posto delle testimonianze del riferimento: punti di forza presi dal CV
+  strengths: [
+    {
+      icon: "problem-solving",
+      color: "lilac",
+      text: "Al centralino di assistenza ho imparato a prendere in carico un problema e a risolverlo nel minor tempo possibile. È lo stesso approccio che porto nello sviluppo e nella gestione dei sistemi: capire cosa non va, trovare la causa e sistemarla senza lasciare nulla a metà.",
+      title: "Problem solving",
+      source: "Help desk e customer care, Contaq",
+    },
+    {
+      icon: "team",
+      color: "blue",
+      text: "Ho sviluppato in team un gestionale per impianti sportivi e, in autonomia, il porting dei suoi database da Access a SQL Server.",
+      title: "In team e in autonomia",
+      source: "Sviluppatore .NET, T.S.I Group",
+    },
+    {
+      icon: "design",
+      color: "violet",
+      text: "Il diploma da grafico pubblicitario e i tre anni alla Scuola del Fumetto Comix mi portano a curare anche l'aspetto visivo di quello che realizzo.",
+      title: "Cura visiva",
+      source: "Formazione artistica",
+    },
+  ] satisfies Strength[],
 };

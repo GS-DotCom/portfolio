@@ -19,26 +19,34 @@ export function MobileNav() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger
-        render={<Button variant="ghost" size="icon" className="md:hidden" />}
+        render={<Button variant="ghost" size="icon-lg" className="lg:hidden" />}
       >
         <Menu />
         <span className="sr-only">Apri menu</span>
       </SheetTrigger>
-      <SheetContent side="right">
+      <SheetContent side="right" className="bg-background">
         <SheetHeader>
-          <SheetTitle>{site.name}</SheetTitle>
+          <SheetTitle className="font-mono text-cyan">
+            {site.logo}.<span className="text-lilac">_</span>
+          </SheetTitle>
         </SheetHeader>
-        <nav className="flex flex-col px-4">
-          {navItems.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              onClick={() => setOpen(false)}
-              className="border-b py-3 text-base text-muted-foreground transition-colors last:border-b-0 hover:text-foreground"
-            >
-              {item.label}
-            </a>
-          ))}
+        <nav aria-label="Principale" className="px-4">
+          <ol className="flex flex-col">
+            {navItems.map((item, index) => (
+              <li key={item.href} className="border-b last:border-b-0">
+                <a
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className="flex items-baseline justify-between py-4 font-mono text-base font-semibold transition-colors hover:text-cyan"
+                >
+                  {`// ${item.label}`}
+                  <span className="text-xs text-muted-foreground">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ol>
         </nav>
       </SheetContent>
     </Sheet>

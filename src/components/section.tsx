@@ -4,29 +4,42 @@ import { cn } from "@/lib/utils";
 
 type SectionProps = {
   id: string;
-  eyebrow: string;
-  title: string;
   children: ReactNode;
   className?: string;
 };
 
-export function Section({ id, eyebrow, title, children, className }: SectionProps) {
+// Ogni sezione disegna il proprio titolo con id `${id}-title`; scroll-mt compensa l'header fisso
+export function Section({ id, children, className }: SectionProps) {
   return (
-    <section
-      id={id}
-      aria-labelledby={`${id}-title`}
-      className={cn("scroll-mt-16 py-20 sm:py-24", className)}
-    >
-      <div className="mx-auto max-w-5xl px-4 sm:px-6">
-        <p className="font-mono text-sm text-muted-foreground">{eyebrow}</p>
-        <h2
-          id={`${id}-title`}
-          className="mt-2 font-heading text-3xl font-semibold tracking-tight sm:text-4xl"
-        >
-          {title}
-        </h2>
-        <div className="mt-10">{children}</div>
-      </div>
+    <section id={id} aria-labelledby={`${id}-title`} className={cn("scroll-mt-20", className)}>
+      {children}
     </section>
+  );
+}
+
+// Titolo centrato delle sezioni, in Poppins semibold come nel riferimento
+export function SectionTitle({
+  id,
+  lines,
+  className,
+}: {
+  id: string;
+  lines: string[];
+  className?: string;
+}) {
+  return (
+    <h2
+      id={`${id}-title`}
+      className={cn(
+        "text-center font-heading text-4xl leading-[1.12] font-semibold tracking-tight sm:text-[3.6rem]",
+        className
+      )}
+    >
+      {lines.map((line) => (
+        <span key={line} className="block">
+          {line}
+        </span>
+      ))}
+    </h2>
   );
 }

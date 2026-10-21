@@ -1,9 +1,8 @@
 "use client";
 
-import { Check, Copy } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 type CopyState = "idle" | "copied" | "failed";
 
@@ -13,7 +12,7 @@ const labels: Record<CopyState, string> = {
   failed: "Seleziona l'indirizzo e premi Ctrl+C",
 };
 
-export function CopyEmailButton({ email }: { email: string }) {
+export function CopyEmailButton({ email, className }: { email: string; className?: string }) {
   const [state, setState] = useState<CopyState>("idle");
 
   // Dopo qualche secondo il pulsante torna allo stato iniziale
@@ -34,9 +33,8 @@ export function CopyEmailButton({ email }: { email: string }) {
   }
 
   return (
-    <Button variant="outline" size="lg" onClick={copy} aria-live="polite">
-      {state === "copied" ? <Check data-icon="inline-start" /> : <Copy data-icon="inline-start" />}
+    <button type="button" onClick={copy} aria-live="polite" className={cn(className)}>
       {labels[state]}
-    </Button>
+    </button>
   );
 }
