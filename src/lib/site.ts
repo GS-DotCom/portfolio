@@ -298,7 +298,8 @@ export const education = [
     course: "Illustratore",
     school: "Scuola del Fumetto Comix",
     period: "2015 — 2017",
-    description: "Corso triennale nelle sedi di Roma Garbatella e Roma Colli Albani.",
+    description: "Corso triennale di illustrazione tradizionale e digitale, svolto nelle sedi di Roma Garbatella e Roma Colli Albani." +
+    " Tecnologie utilizzate: Adobe Photoshop, Adobe Illustrator e Clip Studio Paint",
   }
 ];
 
