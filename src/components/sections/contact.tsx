@@ -78,32 +78,6 @@ export function Contact() {
             <li>
               <CopyEmailButton email={site.email} className={linkClass} />
             </li>
-            {site.socials.linkedin && (
-              <li>
-                <a
-                  href={site.socials.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cn(linkClass, socialClass)}
-                >
-                  <Image src="/socials/linkedin.png" alt="" width={20} height={20} className="size-5" />
-                  LinkedIn
-                </a>
-              </li>
-            )}
-            {site.socials.github && (
-              <li>
-                <a
-                  href={site.socials.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cn(linkClass, socialClass)}
-                >
-                  <Image src="/socials/github.png" alt="" width={20} height={20} className="size-5" />
-                  GitHub
-                </a>
-              </li>
-            )}
           </ul>
         </Reveal>
 

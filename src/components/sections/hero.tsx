@@ -3,7 +3,9 @@ import Image from "next/image";
 import { HeroWaves } from "@/components/hero-waves";
 import { GitHubIcon, LinkedInIcon } from "@/components/icons";
 import { Section } from "@/components/section";
+import { TechLogo } from "@/components/tech-logos";
 import { hero, site } from "@/lib/site";
+import { cn } from "@/lib/utils";
 
 const initials = site.name
   .split(" ")
@@ -81,13 +83,34 @@ export function Hero() {
         <p className="text-sm font-semibold tracking-[0.12em] text-faint uppercase">
           {hero.technologiesLabel}
         </p>
-        <ul className="mt-4 flex flex-wrap items-center justify-center gap-x-10 gap-y-2 sm:gap-x-14">
-          {hero.technologies.map((technology) => (
-            <li key={technology} className="font-heading text-xl font-semibold text-[#6b6a70] sm:text-[1.6rem]">
-              {technology}
-            </li>
-          ))}
-        </ul>
+        {/* Riga che scorre verso sinistra e sfuma ai lati; si ferma al passaggio del mouse.
+            Con movimento ridotto resta ferma e si scorre a mano. */}
+        <div className="group mt-4 w-full max-w-4xl overflow-hidden mask-x-from-85% motion-reduce:overflow-x-auto motion-reduce:[scrollbar-width:none]">
+          <div className="flex w-max motion-safe:animate-marquee motion-safe:group-hover:[animation-play-state:paused]">
+            {[false, true].map((isCopy) => (
+              <ul
+                key={String(isCopy)}
+                aria-hidden={isCopy || undefined}
+                className={cn("flex shrink-0 gap-10 pr-10 sm:gap-14 sm:pr-14", isCopy && "motion-reduce:hidden")}
+              >
+                {hero.technologies.map((technology) => (
+                  <li
+                    key={technology}
+                    className="font-heading text-xl font-semibold whitespace-nowrap text-[#6b6a70] sm:text-[1.6rem]"
+                  >
+                    {/* Logo alto quanto le maiuscole (1cap) e appoggiato sulla linea di base del testo;
+                        0.7em è il ripiego per i browser senza l'unità cap */}
+                    <TechLogo
+                      name={technology}
+                      className="mr-[0.35em] inline-block h-[0.7em] w-auto align-baseline supports-[height:1cap]:h-[1cap]"
+                    />
+                    {technology}
+                  </li>
+                ))}
+              </ul>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Indicatore di scorrimento, al posto dell'animazione Lottie del riferimento */}

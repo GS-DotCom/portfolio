@@ -49,11 +49,19 @@
   --color-faint: var(--faint);
 }
 
-/* Schede fluttuanti, rivelazione all'ingresso e indicatore di scorrimento */
+/* Schede fluttuanti, rivelazione all'ingresso, indicatore di scorrimento e tecnologie della hero */
 @theme {
   --ease-float: cubic-bezier(0.22, 1, 0.36, 1);
   --animate-card-breathe: card-breathe 4s ease-in-out 500ms infinite;
   --animate-scroll-hint: scroll-hint 1.8s ease-in-out infinite;
+  --animate-marquee: marquee 40s linear infinite;
+
+  /* La traccia contiene due copie dell'elenco: spostarla di metà la riporta al punto di partenza */
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
 
   @keyframes card-breathe {
     0%,

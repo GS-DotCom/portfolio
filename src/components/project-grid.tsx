@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 import { ProjectCover } from "@/components/project-cover";
+import { projectHref } from "@/lib/projects";
 import { projectsSection, type Project, type ProjectCategory } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -52,6 +54,7 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
       <ul className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-flow-row-dense lg:grid-cols-3 lg:auto-rows-[12px] lg:gap-x-9 lg:gap-y-0">
         {visible.map((project) => {
           const large = project.size === "large";
+          const href = projectHref(project);
           return (
             <li
               key={project.id}
@@ -61,7 +64,7 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
                 large ? "sm:col-span-2 lg:row-span-52" : "lg:row-span-36"
               )}
             >
-              <article className="group card-float flex h-full flex-col overflow-hidden rounded-sm bg-card">
+              <article className="group card-float relative flex h-full flex-col overflow-hidden rounded-sm bg-card">
                 <div
                   className={cn(
                     "relative overflow-hidden lg:h-auto lg:flex-1",
@@ -72,16 +75,37 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
                 </div>
                 <div className="flex h-35 shrink-0 flex-col justify-center px-8 sm:px-11">
                   <h3 className="truncate font-heading text-xl font-semibold">
-                    {project.href ? (
-                      <a href={project.href} className="after:absolute after:inset-0">
+                    {/* Il link copre tutta la scheda, così tutta la scheda mostra la mano e apre la pagina */}
+                    {href ? (
+                      <Link
+                        href={href}
+                        className="transition-colors after:absolute after:inset-0 group-hover:text-cyan focus-visible:outline-none after:focus-visible:ring-2 after:focus-visible:ring-cyan"
+                      >
                         {project.title}
-                      </a>
+                      </Link>
                     ) : (
                       project.title
                     )}
                   </h3>
-                  <p className="mt-1 text-sm font-medium text-muted-foreground">
-                    {project.placeholder ? `${project.category} · in arrivo` : project.category}
+                  {/* Le due scritte stanno nella stessa cella della griglia: al passaggio del mouse
+                      (o con il focus da tastiera) la categoria sfuma e compare "Apri progetto" */}
+                  <p className="mt-1 grid text-sm font-medium text-muted-foreground">
+                    <span
+                      className={cn(
+                        "col-start-1 row-start-1 transition-opacity duration-300",
+                        href && "group-focus-within:opacity-0 group-hover:opacity-0"
+                      )}
+                    >
+                      {project.placeholder ? `${project.category} · in arrivo` : project.category}
+                    </span>
+                    {href && (
+                      <span
+                        aria-hidden="true"
+                        className="col-start-1 row-start-1 text-white opacity-0 transition-opacity duration-300 group-focus-within:opacity-100 group-hover:opacity-100"
+                      >
+                        {projectsSection.openLabel} →
+                      </span>
+                    )}
                   </p>
                 </div>
               </article>

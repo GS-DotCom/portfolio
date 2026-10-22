@@ -24,8 +24,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
+    // data-scroll-behavior: Next toglie lo scorrimento morbido durante il cambio di pagina,
+    // così aprendo un progetto si parte subito dall'alto
     <html
       lang="it"
+      data-scroll-behavior="smooth"
       className={`${poppins.variable} ${robotoMono.variable} dark h-full scroll-smooth antialiased`}
     >
       <body className="flex min-h-full flex-col">
