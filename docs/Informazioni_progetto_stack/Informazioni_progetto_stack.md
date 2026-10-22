@@ -80,8 +80,7 @@ src/
 public/                          ← file serviti così come sono
 ├─ pesso.jpg                     ← foto della hero
 ├─ projects/portfolio-desktop.png, portfolio-mobile.png   ← copertine della scheda progetto
-├─ projects/portfolio/*.png      ← galleria della pagina del portfolio
-└─ socials/*.png                 ← loghi social (oggi non usati)
+└─ projects/portfolio/*.png      ← galleria della pagina del portfolio
 
 docs/                            ← documenti di progetto (uno per funzionalità)
 └─ Informazioni_progetto_stack/  ← questo documento
