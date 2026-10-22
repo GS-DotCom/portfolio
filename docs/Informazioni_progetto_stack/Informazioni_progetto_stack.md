@@ -4,7 +4,7 @@ Documento di riferimento del portfolio: le tecnologie usate, come funziona ogni 
 
 **Va aggiornato dopo ogni commit** (regola in `CLAUDE.md`): si aggiornano le sezioni che cambiano e si aggiunge una riga al [registro delle modifiche](#registro-delle-modifiche).
 
-Ultimo aggiornamento: 2026-10-22, dopo il commit `342d8f9`.
+Ultimo aggiornamento: 2026-10-22, dopo il commit `59a026d`.
 
 ---
 
@@ -80,8 +80,7 @@ src/
 public/                          ← file serviti così come sono
 ├─ pesso.jpg                     ← foto della hero
 ├─ projects/portfolio-desktop.png, portfolio-mobile.png   ← copertine della scheda progetto
-├─ projects/portfolio/*.png      ← galleria della pagina del portfolio
-└─ socials/*.png                 ← loghi social (oggi non usati)
+└─ projects/portfolio/*.png      ← galleria della pagina del portfolio
 
 docs/                            ← documenti di progetto (uno per funzionalità)
 └─ Informazioni_progetto_stack/  ← questo documento
@@ -275,6 +274,7 @@ Una riga per commit, dal più recente. Per i dettagli di ogni funzionalità c'è
 
 | Data | Commit | Modifica | Documento |
 | --- | --- | --- | --- |
+| 2026-10-22 | `59a026d` | Eliminati i loghi social inutilizzati in `public/socials/` | — |
 | 2026-10-22 | — | Creato questo documento e la regola in `CLAUDE.md` per aggiornarlo dopo ogni commit | — |
 | 2026-10-22 | `342d8f9` | Barra «Progetto successivo» in fondo alle pagine dei progetti | `2026-10-22-progetto-successivo.md` |
 | 2026-10-22 | `b3f368f` | Tolti `Image` e `socialClass` inutilizzati da `contact.tsx` (avvisi del lint) | — |
