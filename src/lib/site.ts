@@ -16,14 +16,15 @@ export const site = {
   },
 };
 
-// Il numero in apice (01, 02, …) segue l'ordine dell'elenco
+// Il numero in apice (01, 02, …) segue l'ordine dell'elenco.
+// La "/" iniziale fa funzionare il menu anche dalle pagine dei progetti.
 export const navItems = [
-  { label: "home", href: "#home" },
-  { label: "competenze", href: "#expertise" },
-  { label: "progetti", href: "#projects" },
-  { label: "AI", href: "#ai" },
-  { label: "esperienza", href: "#experience" },
-  { label: "contatti", href: "#contact" },
+  { label: "home", href: "/#home" },
+  { label: "competenze", href: "/#expertise" },
+  { label: "progetti", href: "/#projects" },
+  { label: "AI", href: "/#ai" },
+  { label: "esperienza", href: "/#experience" },
+  { label: "contatti", href: "/#contact" },
 ];
 
 export const hero = {
@@ -83,7 +84,20 @@ export const expertise = {
 
 export type ProjectCategory = "Web app" | "App";
 
+export type ProjectImage = { src: string; alt: string; width: number; height: number };
+
+// Contenuti della pagina di dettaglio: solo i progetti che li hanno sono cliccabili
+export type ProjectDetails = {
+  description: string;
+  client: string;
+  technologies: string[];
+  // Indirizzo del progetto pubblicato; vuoto nasconde il link "Apri il progetto"
+  url?: string;
+  gallery: ProjectImage[];
+};
+
 export type Project = {
+  // Diventa anche l'indirizzo della pagina: /progetti/<id>
   id: string;
   title: string;
   category: ProjectCategory;
@@ -93,7 +107,7 @@ export type Project = {
   image?: string;
   cover?: "browser" | "phone";
   placeholder?: boolean;
-  href?: string;
+  details?: ProjectDetails;
 };
 
 export const projectsSection = {
@@ -102,6 +116,8 @@ export const projectsSection = {
   filterLabel: "Filtra per",
   allLabel: "Tutti",
   categories: ["Web app", "App"] satisfies ProjectCategory[],
+  // Sostituisce la categoria quando il mouse passa su una scheda cliccabile
+  openLabel: "Apri progetto",
   // Schede "Progetto in arrivo": da spegnere quando arriveranno i progetti veri
   showPlaceholders: true,
 };
@@ -113,13 +129,40 @@ export const projects: Project[] = [
     category: "Web app",
     size: "small",
     image: "/projects/portfolio-desktop.png",
+    details: {
+      description:
+        "Il mio portfolio personale: un sito a pagina unica che presenta competenze, progetti ed esperienze." +
+        " È nato in vibe coding utilizzando Cursor con Claude Code, e ogni funzionalità parte da una reference e da un documento" +
+        "di progetto approvato prima di scrivere il codice.",
+      client: "Progetto personale",
+      technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS", "shadcn/ui"],
+      gallery: [
+        { src: "/projects/portfolio/hero.png", alt: "La hero del portfolio con nome, foto e tecnologie", width: 1440, height: 900 },
+        { src: "/projects/portfolio/progetti.png", alt: "La sezione dei progetti", width: 1440, height: 900 },
+        { src: "/projects/portfolio/ai.png", alt: "La sezione sul vibe coding con Claude", width: 1440, height: 900 },
+        { src: "/projects/portfolio/esperienza.png", alt: "La timeline delle esperienze", width: 1440, height: 900 },
+      ],
+    },
   },
-  { id: "in-arrivo-1", title: "Progetto in arrivo", category: "App", size: "small", cover: "phone", placeholder: true },
-  { id: "in-arrivo-2", title: "Progetto in arrivo", category: "Web app", size: "small", cover: "browser", placeholder: true },
-  { id: "in-arrivo-3", title: "Progetto in arrivo", category: "Web app", size: "large", cover: "browser", placeholder: true },
-  { id: "in-arrivo-4", title: "Progetto in arrivo", category: "App", size: "small", cover: "phone", placeholder: true },
-  { id: "in-arrivo-5", title: "Progetto in arrivo", category: "Web app", size: "small", cover: "browser", placeholder: true },
+  //{ id: "in-arrivo-1", title: "Progetto in arrivo", category: "App", size: "small", cover: "phone", placeholder: true },
+  //{ id: "in-arrivo-2", title: "Progetto in arrivo", category: "Web app", size: "small", cover: "browser", placeholder: true },
+  //{ id: "in-arrivo-3", title: "Progetto in arrivo", category: "Web app", size: "large", cover: "browser", placeholder: true },
+  //{ id: "in-arrivo-4", title: "Progetto in arrivo", category: "App", size: "small", cover: "phone", placeholder: true },
+  //{ id: "in-arrivo-5", title: "Progetto in arrivo", category: "Web app", size: "small", cover: "browser", placeholder: true },
 ];
+
+// Testi fissi della pagina di dettaglio di un progetto (/progetti/<id>)
+export const projectPage = {
+  backLabel: "Torna ai progetti",
+  breadcrumbLabel: "Percorso",
+  breadcrumbHome: "Home",
+  breadcrumbProjects: "Progetti",
+  clientLabel: "Cliente",
+  technologiesLabel: "Stack tecnologico",
+  openLabel: "Apri il progetto",
+  footerCredits: `© 2026 ${site.name}.`,
+  footerRights: "Tutti i diritti riservati.",
+};
 
 // Sezione sul vibe coding: come nasce questo sito e con quali strumenti
 export const aiSection = {
