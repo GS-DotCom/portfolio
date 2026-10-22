@@ -32,6 +32,7 @@ Next.js 16 (App Router, Turbopack) con React 19, TypeScript, Tailwind CSS v4 e c
 - **Screenshot del portfolio:** `public/projects/portfolio-desktop.png` è una cattura del sito stesso, usata dalla scheda del portfolio. Va rifatta quando cambia la hero.
 - **`cn`:** arriva dal pacchetto ufficiale `cn` di shadcn (sostituisce `clsx` + `tailwind-merge`). `src/lib/utils.ts` lo riesporta; i componenti in `src/components/ui/` lo importano direttamente da `"cn"`, come li genera la CLI di shadcn. Nuovi componenti UI si aggiungono con `npx shadcn add <nome>`.
 - **Icone:** `lucide-react` non include più le icone dei brand, quindi GitHub e LinkedIn sono SVG in `src/components/icons.tsx`.
+- **Loghi delle tecnologie:** la riga che scorre nella hero mostra un logo accanto a ogni nome di `hero.technologies`. I loghi sono in `src/components/tech-logos.tsx`, monocromatici e indicizzati per nome: un nome senza logo mostra solo la scritta. Per aggiungerne uno si copia il tracciato SVG da Simple Icons (o da Devicon se manca) e, se il disegno ha margini, si ritaglia il `viewBox` attorno al disegno. L'altezza è `1cap`, cioè quella delle maiuscole.
 
 ## Convenzioni
 

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { HeroWaves } from "@/components/hero-waves";
 import { GitHubIcon, LinkedInIcon } from "@/components/icons";
 import { Section } from "@/components/section";
+import { TechLogo } from "@/components/tech-logos";
 import { hero, site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -97,6 +98,12 @@ export function Hero() {
                     key={technology}
                     className="font-heading text-xl font-semibold whitespace-nowrap text-[#6b6a70] sm:text-[1.6rem]"
                   >
+                    {/* Logo alto quanto le maiuscole (1cap) e appoggiato sulla linea di base del testo;
+                        0.7em è il ripiego per i browser senza l'unità cap */}
+                    <TechLogo
+                      name={technology}
+                      className="mr-[0.35em] inline-block h-[0.7em] w-auto align-baseline supports-[height:1cap]:h-[1cap]"
+                    />
                     {technology}
                   </li>
                 ))}
