@@ -30,7 +30,7 @@ export const hero = {
   subtitle: "Sviluppatore Web .NET e Sistemista z/OS.",
   // Al posto di "As featured in" del riferimento
   technologiesLabel: "Tecnologie che uso",
-  technologies: ["C#", ".NET", "SQL Server", "JavaScript", "HTML", "CSS", "IBM"],
+  technologies: ["C#", ".NET", "SQL Server", "JavaScript", "HTML", "CSS", "IBM", "React", "Next.js", "Typescript", "git"],
 };
 
 // Presentazione estesa: oggi non compare nel sito, la teniamo per usi futuri
