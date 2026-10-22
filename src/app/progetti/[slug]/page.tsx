@@ -7,7 +7,7 @@ import { Suspense } from "react";
 
 import { Reveal } from "@/components/reveal";
 import { SiteHeader } from "@/components/site-header";
-import { getProject, projectsWithDetails } from "@/lib/projects";
+import { getAdjacentProjects, getProject, projectPath, projectsWithDetails } from "@/lib/projects";
 import { projectPage, site } from "@/lib/site";
 
 // Una pagina per ogni progetto con contenuti, generata in fase di build
@@ -146,6 +146,65 @@ async function ProjectContent({ params }: Pick<PageProps<"/progetti/[slug]">, "p
           </Reveal>
         ))}
       </div>
+
+      <AdjacentProjects id={project.id} />
     </>
+  );
+}
+
+const roundButtonClass =
+  "flex size-11 items-center justify-center rounded-full bg-card ring-1 ring-white/10 transition-colors hover:bg-cyan hover:text-background";
+
+// Barra "Progetto successivo", al posto del riquadro fisso "Next Project" del riferimento:
+// anteprima e titolo del successivo a sinistra, frecce per precedente e successivo a destra
+function AdjacentProjects({ id }: { id: string }) {
+  const adjacent = getAdjacentProjects(id);
+  if (!adjacent) return null;
+  const { previous, next } = adjacent;
+
+  return (
+    <nav
+      aria-label={projectPage.adjacentLabel}
+      className="mt-24 flex flex-col gap-8 border-t border-white/10 pt-12 sm:mt-32 sm:flex-row sm:items-center sm:justify-between sm:pt-16"
+    >
+      <Link href={projectPath(next)} className="group/next flex items-center gap-6">
+        {next.image && (
+          <span className="relative hidden aspect-[16/10] w-40 shrink-0 overflow-hidden rounded-sm bg-card sm:block">
+            <Image
+              src={next.image}
+              alt=""
+              fill
+              sizes="160px"
+              className="object-cover object-top transition-transform duration-500 group-hover/next:scale-105"
+            />
+          </span>
+        )}
+        <span>
+          <span className="block font-mono text-sm font-semibold tracking-[0.12em] text-cyan uppercase">
+            {projectPage.nextLabel}
+          </span>
+          <span className="mt-2 block font-heading text-3xl font-semibold tracking-tight transition-colors group-hover/next:text-cyan sm:text-4xl">
+            {next.title}
+          </span>
+        </span>
+      </Link>
+
+      <div className="flex gap-3">
+        <Link
+          href={projectPath(previous)}
+          aria-label={`${projectPage.previousButtonLabel} ${previous.title}`}
+          className={roundButtonClass}
+        >
+          <ArrowLeft aria-hidden="true" className="size-4" />
+        </Link>
+        <Link
+          href={projectPath(next)}
+          aria-label={`${projectPage.nextButtonLabel} ${next.title}`}
+          className={roundButtonClass}
+        >
+          <ArrowRight aria-hidden="true" className="size-4" />
+        </Link>
+      </div>
+    </nav>
   );
 }
