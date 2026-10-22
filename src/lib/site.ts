@@ -160,6 +160,11 @@ export const projectPage = {
   clientLabel: "Cliente",
   technologiesLabel: "Stack tecnologico",
   openLabel: "Apri il progetto",
+  // Barra in fondo alla pagina: compare solo quando ci sono almeno due progetti con pagina
+  adjacentLabel: "Altri progetti",
+  nextLabel: "Progetto successivo",
+  previousButtonLabel: "Progetto precedente:",
+  nextButtonLabel: "Progetto successivo:",
   footerCredits: `© 2026 ${site.name}.`,
   footerRights: "Tutti i diritti riservati.",
 };
