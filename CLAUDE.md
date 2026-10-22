@@ -38,6 +38,16 @@ Next.js 16 (App Router, Turbopack) con React 19, TypeScript, Tailwind CSS v4 e c
 
 Il sito è in italiano (`lang="it"`): testi dell'interfaccia e commenti in italiano, nomi nel codice in inglese.
 
+## Documento dello stack da aggiornare dopo ogni commit
+
+`docs/Informazioni_progetto_stack/Informazioni_progetto_stack.md` descrive lo stack, come funziona ogni componente, quali file servono e come fare le modifiche più comuni. **Dopo ogni commit** va aggiornato:
+
+1. le sezioni che la modifica cambia (tecnologie, componenti, file, contenuti di `site.ts`, ricette);
+2. una nuova riga in cima al "Registro delle modifiche", con data, hash del commit, sintesi e documento di progetto;
+3. la riga "Ultimo aggiornamento".
+
+L'aggiornamento finisce nel commit successivo, oppure in un commit dedicato se non ne seguono altri. I commit che toccano solo questo documento non hanno una riga propria nel registro (non potrebbero riportare il proprio hash).
+
 ## Documento di progetto prima di ogni nuova funzionalità
 
 Quando viene chiesto di sviluppare una nuova funzionalità o implementazione, **non scrivere codice subito**:
