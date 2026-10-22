@@ -1,5 +1,4 @@
 import { Palette, Puzzle, Users, type LucideIcon } from "lucide-react";
-import Image from "next/image";
 
 import { CopyEmailButton } from "@/components/copy-email-button";
 import { Reveal } from "@/components/reveal";
@@ -27,9 +26,6 @@ const placement = [
 ];
 
 const linkClass = "w-fit font-mono text-[1.05rem] font-semibold transition-colors hover:text-cyan";
-
-// Logo PNG del social a sinistra del nome
-const socialClass = "flex items-center gap-2.5";
 
 function StrengthCard({ strength, className }: { strength: Strength; className?: string }) {
   const Icon = icons[strength.icon];
