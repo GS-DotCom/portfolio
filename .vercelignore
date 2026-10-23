@@ -1,0 +1,11 @@
+# File che la CLI di Vercel non carica: servono solo in locale o non servono alla build.
+# Il materiale di riferimento è di siti altrui e resta privato; i documenti di progetto
+# non servono al sito. La chiave di Web3Forms è una variabile d'ambiente del progetto Vercel.
+references
+docs
+.playwright-mcp
+.claude
+.env*
+.next
+node_modules
+*.tsbuildinfo

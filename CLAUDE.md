@@ -12,6 +12,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Non ci sono test.
 
+## Pubblicazione
+
+Il sito è su Vercel (progetto `giuliano-simone` nello spazio `pesso1`, https://giuliano-simone.vercel.app), collegato al repository GitHub: ogni push su `main` pubblica in produzione, ogni altro branch o PR crea un'anteprima. La variabile `NEXT_PUBLIC_WEB3FORMS_KEY` è impostata su Vercel per Production e Preview, come valore pubblico («config»). `.vercelignore` tiene fuori dai deploy fatti con la CLI `references/`, `docs/` e i file locali. La cartella `.vercel/` collega la CLI al progetto e non va versionata.
+
 ## Stack
 
 Next.js 16 (App Router, Turbopack) con React 19, TypeScript, Tailwind CSS v4 e componenti shadcn (stile `base-nova`, basati su `@base-ui/react`, non su Radix). Next.js 16 ha API diverse dalle versioni precedenti: consultare `node_modules/next/dist/docs/` prima di scrivere codice (vedi `AGENTS.md`).
