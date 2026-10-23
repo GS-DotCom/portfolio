@@ -4,7 +4,7 @@ Documento di riferimento del portfolio: le tecnologie usate, come funziona ogni 
 
 **Va aggiornato dopo ogni commit** (regola in `CLAUDE.md`): si aggiornano le sezioni che cambiano e si aggiunge una riga al [registro delle modifiche](#registro-delle-modifiche).
 
-Ultimo aggiornamento: 2026-10-23, dopo il commit `c0d568c`.
+Ultimo aggiornamento: 2026-10-23, dopo il commit `e82a9cf`.
 
 ---
 
@@ -189,7 +189,7 @@ Racconta il vibe coding con Claude: un finto terminale con richieste e risposte,
 Due linee del tempo verticali, con linea bianca, cerchi viola e schede bianche: una per le esperienze di lavoro e una per formazione e altre esperienze. Da `lg` le schede si alternano ai due lati, con la data di fronte; su mobile formano una colonna con la linea a sinistra. I dati sono `experience`, `education` e `otherExperience` di `site.ts`.
 
 ### Contatti: `sections/contact.tsx`, `copy-email-button.tsx`
-Il titolo, l'email con il pulsante «copia» e tre riquadri colorati a forma di citazione con i punti di forza (`contact.strengths`). **`copy-email-button.tsx`** (client) copia l'indirizzo negli appunti (`navigator.clipboard`) e dopo 2,5 secondi torna allo stato iniziale.
+Il titolo, l'email con il pulsante «copia» e tre riquadri colorati a forma di citazione con i punti di forza (`contact.strengths`). Il clic sull'email apre in una nuova scheda la finestra di scrittura di Gmail (`mail.google.com/mail/?view=cm`), con destinatario `site.email` e oggetto `contact.emailSubject`; non si usa `mailto:`, che su molti PC non apre nulla. **`copy-email-button.tsx`** (client) copia l'indirizzo negli appunti (`navigator.clipboard`) e dopo 2,5 secondi torna allo stato iniziale.
 
 ### Componenti UI (`components/ui/`, generati da shadcn)
 `button` e `sheet` sono usati dal menu mobile. `badge`, `card` e `separator` sono presenti ma oggi non usati. Importano `cn` direttamente da `"cn"`, come li genera la CLI.
@@ -265,6 +265,7 @@ Non ci sono test automatici: le verifiche si fanno con lint, tipi e controllo ne
 | Cambiare larghezza o sfumatura della riga | `sections/hero.tsx` | `max-w-4xl` e `mask-x-from-85%` |
 | Aggiungere un progetto | `site.ts` → `projects` | Aggiungere un oggetto. Con `details` ha una pagina `/progetti/<id>`, compare nella barra «Progetto successivo» e va rigenerato con `npm run build`. Le schermate vanno in `public/projects/<id>/` |
 | Cambiare la scritta al passaggio sulla scheda | `site.ts` → `projectsSection.openLabel`; effetto in `project-grid.tsx` | Testo in `site.ts`; colore e dissolvenza nelle classi `group-hover:` |
+| Cambiare indirizzo o oggetto dell'email dei contatti | `site.ts` → `site.email` e `contact.emailSubject` | Il link a Gmail in `contact.tsx` si aggiorna da solo |
 | Cambiare i colori del sito | `globals.css` → `:root` | Modificare le variabili |
 | Cambiare la forma del nastro della hero | `src/lib/hero-waves.ts` | Modificare `CONTROL_POINTS`; numero di linee, colori e velocità sono nelle costanti accanto (`LINES`, `COLORS`, `TWIST_SPEED`) |
 | Aggiungere una voce al menu | `site.ts` → `navItems` e una sezione con lo stesso `id` | L'ancora deve corrispondere all'`id` di `Section` |
@@ -280,6 +281,7 @@ Una riga per commit, dal più recente. Per i dettagli di ogni funzionalità c'è
 
 | Data | Commit | Modifica | Documento |
 | --- | --- | --- | --- |
+| 2026-10-23 | `e82a9cf` | L'email dei contatti apre la scrittura in Gmail in una nuova scheda, al posto di `mailto:` | `2026-10-23-email-apre-gmail.md` |
 | 2026-10-23 | `c0d568c` | Hero fluida anche sui PC poco potenti: nastro in WebGL dentro un Web Worker, a 30 fps | `2026-10-23-ottimizzazione-hero.md` |
 | 2026-10-22 | `59a026d` | Eliminati i loghi social inutilizzati in `public/socials/` | — |
 | 2026-10-22 | — | Creato questo documento e la regola in `CLAUDE.md` per aggiornarlo dopo ogni commit | — |
