@@ -4,6 +4,7 @@ import { ArrowRight, Check, CircleAlert, LoaderCircle, Send } from "lucide-react
 import { useEffect, useRef, useState, type ReactNode, type SubmitEvent } from "react";
 import { flushSync } from "react-dom";
 
+import { EMAIL_PATTERN, LETTER_PATTERN, NAME_PATTERN, PHONE_PATTERN } from "@/lib/contact-rules";
 import { contact, site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -42,15 +43,11 @@ function normalizeName(value: string) {
   return value.trim().replace(/’/g, "'");
 }
 
-// Lettere anche accentate, spazio, apostrofo e trattino; serve almeno una lettera, così «--» non passa
-const NAME = /^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,50}$/;
-const LETTER = /[A-Za-zÀ-ÖØ-öø-ÿ]/;
-
 function nameError(value: string, empty: string) {
   const name = normalizeName(value);
   if (name === "") return empty;
   if (name.length < 2 || name.length > 50) return errors.nameLength;
-  if (!NAME.test(name) || !LETTER.test(name)) return errors.nameChars;
+  if (!NAME_PATTERN.test(name) || !LETTER_PATTERN.test(name)) return errors.nameChars;
   return null;
 }
 
@@ -61,7 +58,7 @@ function emailError(value: string) {
   if (email.split("@").length !== 2) return errors.emailAt;
   if (email.length > 254) return errors.emailLength;
   if (email.includes("..") || /^\.|\.$|\.@|@\./.test(email)) return errors.emailDots;
-  if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email)) return errors.emailDomain;
+  if (!EMAIL_PATTERN.test(email)) return errors.emailDomain;
   return null;
 }
 
@@ -71,7 +68,7 @@ const rules: [CheckedField, (values: Values) => string | null][] = [
   ["firstName", (values) => nameError(values.firstName, errors.firstNameEmpty)],
   ["lastName", (values) => nameError(values.lastName, errors.lastNameEmpty)],
   ["email", (values) => emailError(values.email)],
-  ["phone", ({ phone }) => (phone.trim() === "" || /^\+?[0-9\s-]{6,15}$/.test(phone.trim()) ? null : errors.phone)],
+  ["phone", ({ phone }) => (phone.trim() === "" || PHONE_PATTERN.test(phone.trim()) ? null : errors.phone)],
   ["message", ({ message }) => (message.trim() === "" ? errors.message : null)],
   ["privacy", ({ privacy }) => (privacy ? null : errors.privacy)],
 ];

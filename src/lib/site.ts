@@ -1,5 +1,7 @@
 // Tutti i contenuti del portfolio. I link social vuoti nascondono i relativi link.
 
+import { EMAIL_PATTERN, NAME_PATTERN, PHONE_PATTERN } from "@/lib/contact-rules";
+
 export const site = {
   name: "Giuliano Simone",
   role: "Sviluppatore Web .NET e Sistemista IT",
@@ -87,6 +89,20 @@ export type ProjectCategory = "Web app" | "App";
 
 export type ProjectImage = { src: string; alt: string; width: number; height: number };
 
+// Sezione "In evidenza" della pagina del progetto: una funzionalità raccontata con schermata,
+// regole, un frammento di codice e i punti di forza. Nel paragrafo, **testo** va in grassetto.
+export type ProjectHighlight = {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  image: ProjectImage & { caption: string };
+  rulesTitle: string;
+  rules: { name: string; optional?: boolean; text: string; pattern?: string }[];
+  code: { title: string; text: string; file: string; snippet: string; label: string };
+  pointsTitle: string;
+  points: { title: string; text: string }[];
+};
+
 // Contenuti della pagina di dettaglio: solo i progetti che li hanno sono cliccabili
 export type ProjectDetails = {
   description: string;
@@ -94,6 +110,7 @@ export type ProjectDetails = {
   technologies: string[];
   // Indirizzo del progetto pubblicato; vuoto nasconde il link "Apri il progetto"
   url?: string;
+  highlight?: ProjectHighlight;
   gallery: ProjectImage[];
 };
 
@@ -134,9 +151,78 @@ export const projects: Project[] = [
       description:
         "Il mio portfolio personale: un sito a pagina unica che presenta competenze, progetti ed esperienze." +
         " È nato in vibe coding utilizzando Cursor con Claude Code, e ogni funzionalità parte da una reference e da un documento" +
-        "di progetto approvato prima di scrivere il codice.",
+        " di progetto approvato prima di scrivere il codice.",
       client: "Progetto personale",
-      technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS", "shadcn/ui"],
+      technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS", "shadcn/ui", "Web3Forms API"],
+      highlight: {
+        eyebrow: "In evidenza",
+        title: "Form di contatto con invio tramite API",
+        lead:
+          "Il form dei contatti manda il messaggio direttamente nella mia casella senza un server dedicato: il browser chiama l'**API REST di Web3Forms** con una richiesta POST in JSON, e il servizio recapita l'email con il mittente già impostato come «Rispondi a». Prima dell'invio ogni campo viene **controllato con regole precise**, con un messaggio di errore diverso per ogni problema.",
+        image: {
+          src: "/projects/portfolio/form-contatti.png",
+          alt: "Il form di contatto compilato, con l'errore «L'indirizzo deve contenere una sola @» sotto il campo Email",
+          caption: "Il controllo dell'email in azione: due @ nell'indirizzo bloccano l'invio.",
+          width: 808,
+          height: 1053,
+        },
+        rulesTitle: "Controlli sui campi",
+        rules: [
+          {
+            name: "Nome e Cognome",
+            text: "Solo lettere, anche accentate, spazi, apostrofo e trattino, da 2 a 50 caratteri. Niente numeri o simboli.",
+            pattern: NAME_PATTERN.source,
+          },
+          {
+            name: "Email",
+            text: "Una sola @, dominio con estensione di almeno due lettere, nessuno spazio, niente punti doppi o ai bordi, fino a 254 caratteri.",
+            pattern: EMAIL_PATTERN.source,
+          },
+          {
+            name: "Telefono",
+            optional: true,
+            text: "Prefisso + facoltativo, poi cifre, spazi o trattini, da 6 a 15 caratteri.",
+            pattern: PHONE_PATTERN.source,
+          },
+          {
+            name: "Oggetto e messaggio",
+            text: "Oggetto fino a 50 caratteri e messaggio fino a 50 righe, con i contatori che si aggiornano mentre scrivi.",
+          },
+          { name: "Consenso privacy", text: "Obbligatorio e mai spuntato in partenza, come chiede il GDPR." },
+        ],
+        code: {
+          title: "Invio con l'API di Web3Forms",
+          text: "Una sola richiesta dal browser: nessun backend da mantenere e nessuna password nel codice. La chiave dell'API sta in una variabile d'ambiente.",
+          file: "contact-form.tsx",
+          label: "Esempio della richiesta all'API di Web3Forms e della risposta",
+          snippet: [
+            'await fetch("https://api.web3forms.com/submit", {',
+            '  method: "POST",',
+            "  body: JSON.stringify({",
+            "    access_key, subject, name, email,",
+            "    Telefono, Oggetto, Messaggio,",
+            "  }),",
+            "});",
+            '// → { "success": true }',
+          ].join("\n"),
+        },
+        pointsTitle: "Esperienza d'uso e accessibilità",
+        points: [
+          {
+            title: "Errori chiari:",
+            text: "sotto ogni campo compare il motivo preciso, e il cursore va sul primo da correggere.",
+          },
+          {
+            title: "Lettori di schermo:",
+            text: "aria-invalid e aria-describedby collegano ogni errore al suo campo; conferma e avvisi vengono annunciati.",
+          },
+          {
+            title: "Stati dell'invio:",
+            text: "«Invio in corso…», poi la conferma oppure un avviso, senza perdere quello che hai scritto.",
+          },
+          { title: "Antispam:", text: "un campo trappola invisibile che compilano solo i bot." },
+        ],
+      },
       gallery: [
         { src: "/projects/portfolio/hero.png", alt: "La hero del portfolio con nome, foto e tecnologie", width: 1440, height: 900 },
         { src: "/projects/portfolio/progetti.png", alt: "La sezione dei progetti", width: 1440, height: 900 },
