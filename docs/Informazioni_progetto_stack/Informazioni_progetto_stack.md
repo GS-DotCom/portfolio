@@ -279,6 +279,7 @@ Non ci sono test automatici: le verifiche si fanno con lint, tipi e controllo ne
 - **Collegato a GitHub** (`GS-DotCom/portfolio`):
   - ogni push su `main`, quindi ogni merge di una PR, fa partire la build e pubblica il sito in produzione in un paio di minuti;
   - ogni altro branch, e ogni PR, ha un'anteprima con un indirizzo proprio, visibile solo a chi ha accesso al progetto Vercel.
+- **Autore dei commit:** sul piano gratuito Vercel pubblica solo i commit il cui autore è riconosciuto come proprietario del progetto. L'email di git (`git config user.email`) deve quindi essere tra quelle dell'account GitHub GS-DotCom, che oggi sono tarquinioprisco96@outlook.it e g.simone1927@gmail.com. Con un'email sconosciuta il deploy resta «Blocked» con il messaggio «GitHub couldn't verify an account for the commit», e un deploy bloccato non si può rilanciare: serve un commit nuovo.
 - **Variabili d'ambiente** (Settings → Environment Variables): `NEXT_PUBLIC_WEB3FORMS_KEY` per Production e Preview, di tipo «config», cioè pubblica: finisce nel JavaScript del sito, come deve essere per una chiave usata dal browser. Una variabile nuova o cambiata vale solo dalla build successiva.
 - **CLI:** `npx vercel@latest` (non è installata globalmente).
   - `vercel ls`: i deploy;
