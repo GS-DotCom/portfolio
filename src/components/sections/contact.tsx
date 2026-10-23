@@ -27,6 +27,10 @@ const placement = [
 
 const linkClass = "w-fit font-mono text-[1.05rem] font-semibold transition-colors hover:text-cyan";
 
+// Finestra di scrittura di Gmail in una nuova scheda, con destinatario e oggetto già compilati.
+// Un sito non può sapere quale servizio di posta usa chi lo visita, e mailto: su molti PC non apre nulla.
+const composeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(site.email)}&su=${encodeURIComponent(contact.emailSubject)}`;
+
 function StrengthCard({ strength, className }: { strength: Strength; className?: string }) {
   const Icon = icons[strength.icon];
   return (
@@ -64,10 +68,13 @@ export function Contact() {
 
           <p className="mt-16 lg:mt-28">
             <a
-              href={`mailto:${site.email}?subject=${encodeURIComponent(contact.emailSubject)}`}
+              href={composeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="marker-underline font-mono text-lg font-medium wrap-anywhere [--marker:#8d47de] sm:text-[1.4rem]"
             >
               {site.email}
+              <span className="sr-only"> (si apre Gmail in una nuova scheda)</span>
             </a>
           </p>
           <ul className="mt-4 flex flex-col gap-2">
