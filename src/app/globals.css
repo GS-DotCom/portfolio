@@ -43,9 +43,6 @@
   --color-pink: var(--pink);
   --color-blue: var(--blue);
   --color-orange: var(--orange);
-  --color-quote-lilac: var(--quote-lilac);
-  --color-quote-blue: var(--quote-blue);
-  --color-quote-violet: var(--quote-violet);
   --color-faint: var(--faint);
 }
 
@@ -118,9 +115,6 @@
   --pink: #ea0c97;
   --blue: #2749dd;
   --orange: #ff6c2a;
-  --quote-lilac: #bb60fb;
-  --quote-blue: #0067dd;
-  --quote-violet: #923fe5;
   --faint: #5c5b60;
   /* Ombre a due strati delle schede: a riposo e sollevate, con un alone chiaro */
   --card-shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 10px 28px -6px rgb(0 0 0 / 55%),

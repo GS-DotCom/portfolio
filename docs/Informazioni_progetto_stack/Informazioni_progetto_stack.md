@@ -4,7 +4,7 @@ Documento di riferimento del portfolio: le tecnologie usate, come funziona ogni 
 
 **Va aggiornato dopo ogni commit** (regola in `CLAUDE.md`): si aggiornano le sezioni che cambiano e si aggiunge una riga al [registro delle modifiche](#registro-delle-modifiche).
 
-Ultimo aggiornamento: 2026-10-22, dopo il commit `59a026d`.
+Ultimo aggiornamento: 2026-10-23, dopo il commit `422b92c`.
 
 ---
 
@@ -65,16 +65,19 @@ src/
 │  ├─ site-header.tsx · header-shell.tsx · mobile-nav.tsx   ← header e menu
 │  ├─ section.tsx                ← contenitore comune delle sezioni e titolo
 │  ├─ reveal.tsx                 ← dissolvenza all'ingresso nello schermo
-│  ├─ hero-waves.tsx             ← nastro animato su canvas della hero
+│  ├─ hero-waves.tsx             ← nastro animato della hero: crea il canvas e avvia il worker
+│  ├─ hero-waves.worker.ts       ← Web Worker che disegna il nastro
 │  ├─ tech-logos.tsx             ← loghi delle tecnologie della hero
 │  ├─ project-grid.tsx · project-cover.tsx                  ← griglia e copertine dei progetti
 │  ├─ experience-timeline.tsx    ← linea del tempo delle esperienze
 │  ├─ copy-email-button.tsx      ← pulsante "copia email"
+│  ├─ contact-form.tsx           ← form di contatto (invio con Web3Forms)
 │  ├─ custom-cursor.tsx          ← cerchio azzurro che segue il mouse
 │  └─ icons.tsx                  ← SVG di GitHub e LinkedIn
 └─ lib/
    ├─ site.ts                    ← TUTTI i contenuti del sito
    ├─ projects.ts                ← funzioni sui progetti (indirizzi, precedente/successivo)
+   ├─ hero-waves.ts              ← disegno del nastro della hero (WebGL e canvas 2D)
    └─ utils.ts                   ← riesporta cn
 
 public/                          ← file serviti così come sono
@@ -99,11 +102,12 @@ Next.js con l'App Router distingue due tipi di componenti:
 - **Client Components** (file che iniziano con `"use client"`): sono anche eseguiti nel browser, dove servono stato, effetti o eventi. Sono:
   - `header-shell`: sfondo dell'header dopo lo scorrimento;
   - `mobile-nav`: apertura del menu;
-  - `hero-waves`: animazione del canvas;
+  - `hero-waves`: avvia il disegno del nastro nel Web Worker;
   - `custom-cursor`: segue il mouse;
   - `reveal`: osserva quando un elemento entra nello schermo;
   - `project-grid`: filtri;
-  - `copy-email-button`: appunti.
+  - `copy-email-button`: appunti;
+  - `contact-form`: stato, controllo dei campi e invio del form di contatto.
 
 All'avvio React "idrata" la pagina: collega il JavaScript all'HTML già pronto. Finché non idrata, le animazioni, il menu e le sezioni con `Reveal` non partono. Senza JavaScript, `Reveal` lascia comunque il contenuto visibile.
 
@@ -145,10 +149,14 @@ Mostra `SiteHeader` e, in ordine, `Hero`, `Expertise`, `Projects`, `Ai`, `Experi
 ### Hero: `sections/hero.tsx`
 
 - Lo sfondo sfuma verso il resto della pagina. Al centro ci sono foto (`site.photo`, con le iniziali se manca), icone di GitHub e LinkedIn, nome e sottotitolo.
-- **`hero-waves.tsx`** (client): un nastro di circa 50 linee su `<canvas>` 2D.
+- **Nastro animato:** 40 linee sottili su un `<canvas>`, ridisegnate 30 volte al secondo.
   - Ogni linea segue una curva Catmull-Rom definita da `CONTROL_POINTS`, con uno scarto sinusoidale che crea l'effetto "nastro che si avvita".
   - Il colore sfuma dal magenta al viola all'indaco.
+  - **`lib/hero-waves.ts`** contiene tutto il disegno. Usa **WebGL**: lo spostamento dei punti e lo spessore delle linee li calcola la scheda grafica, e a ogni fotogramma cambiano solo seno e coseno del tempo. Se WebGL non c'è, ripiega sul canvas 2D con lo stesso aspetto.
+  - **`hero-waves.tsx`** (client) crea il canvas e lo cede a **`hero-waves.worker.ts`** con `transferControlToOffscreen`, così il disegno non pesa sul thread principale della pagina. Al worker manda solo dimensioni e stato. Se il browser non ha `OffscreenCanvas`, o il worker non parte, disegna sulla pagina.
+  - Il canvas lo crea l'effetto e non il JSX, perché un canvas ceduto al worker non si può riusare. La dissolvenza d'ingresso scatta una volta sola, dopo il primo disegno.
   - Si ferma fuori schermo, con la scheda nascosta e con movimento ridotto, e si adatta alla densità dei pixel.
+  - Le scelte e le misure di prestazione sono in `docs/2026-10-23-ottimizzazione-hero.md`.
 - **Riga "Tecnologie che uso":** scorre da sola verso sinistra, solo con CSS.
   - L'elenco è ripetuto due volte e l'animazione `marquee` sposta la traccia di metà, così il ciclo non ha salti.
   - Sfuma ai lati con `mask-x-from-85%` e si ferma al passaggio del mouse.
@@ -182,8 +190,14 @@ Racconta il vibe coding con Claude: un finto terminale con richieste e risposte,
 ### Esperienza: `sections/experience.tsx`, `experience-timeline.tsx`
 Due linee del tempo verticali, con linea bianca, cerchi viola e schede bianche: una per le esperienze di lavoro e una per formazione e altre esperienze. Da `lg` le schede si alternano ai due lati, con la data di fronte; su mobile formano una colonna con la linea a sinistra. I dati sono `experience`, `education` e `otherExperience` di `site.ts`.
 
-### Contatti: `sections/contact.tsx`, `copy-email-button.tsx`
-Il titolo, l'email con il pulsante «copia» e tre riquadri colorati a forma di citazione con i punti di forza (`contact.strengths`). **`copy-email-button.tsx`** (client) copia l'indirizzo negli appunti (`navigator.clipboard`) e dopo 2,5 secondi torna allo stato iniziale.
+### Contatti: `sections/contact.tsx`, `copy-email-button.tsx`, `contact-form.tsx`
+Due colonne, una sotto l'altra su mobile. A sinistra il titolo, il testo, l'email e il pulsante «copia»; a destra, su sfondo `bg-card`, il form di contatto. Il clic sull'email apre in una nuova scheda la finestra di scrittura di Gmail (`mail.google.com/mail/?view=cm`), con destinatario `site.email` e oggetto `contact.emailSubject`; non si usa `mailto:`, che su molti PC non apre nulla. **`copy-email-button.tsx`** (client) copia l'indirizzo negli appunti (`navigator.clipboard`) e dopo 2,5 secondi torna allo stato iniziale.
+
+**`contact-form.tsx`** (client): il form con Nome, Cognome, Nome società (facoltativo), Email e Messaggio. I testi sono in `contact.form` di `site.ts`.
+- **Messaggio:** al massimo 50 righe (`contact.form.maxLines`) e 4000 caratteri. Le righe in più si tagliano mentre si scrive e il contatore «N / 50 righe» si colora quando il limite è raggiunto.
+- **Errori dei campi:** compaiono al primo clic su «Invia» e si aggiornano mentre si corregge. Il focus va sul primo campo sbagliato e i campi hanno `aria-invalid` e `aria-describedby`.
+- **Invio:** una `fetch` dal browser a `https://api.web3forms.com/submit`, con la chiave `NEXT_PUBLIC_WEB3FORMS_KEY` di `.env.local`. È una chiave pubblica: permette solo di mandare messaggi alla casella collegata. Web3Forms inoltra il messaggio a `site.email` con l'oggetto «Nuovo messaggio dal portfolio: Nome Cognome» e il mittente come «Rispondi a». Un campo nascosto `botcheck` fa da trappola per i bot.
+- **Stati:** «Invio in corso…» con il tasto disattivato; poi la conferma «Messaggio inviato», che riceve il focus e ha «Scrivi un altro messaggio», oppure un avviso `role="alert"` sopra i campi, con i dati che restano compilati. Senza chiave il form mostra l'avviso e la console spiega il motivo.
 
 ### Componenti UI (`components/ui/`, generati da shadcn)
 `button` e `sheet` sono usati dal menu mobile. `badge`, `card` e `separator` sono presenti ma oggi non usati. Importano `cn` direttamente da `"cn"`, come li genera la CLI.
@@ -204,14 +218,14 @@ Il titolo, l'email con il pulsante «copia» e tre riquadri colorati a forma di 
 | `projectPage` | Testi fissi della pagina del progetto e della barra «Progetto successivo» |
 | `aiSection` | Testi della sezione AI e del finto terminale |
 | `experienceSection`, `experience`, `education`, `otherExperience` | Linee del tempo |
-| `contact` | Testi dei contatti e punti di forza |
+| `contact` | Testi dei contatti, oggetto del link a Gmail e testi del form (`form`) |
 
 ---
 
 ## 8. Stile e tema: `src/app/globals.css`
 
 - **Import:** `tailwindcss`, `tw-animate-css` e `shadcn/tailwind.css`.
-- **Colori:** sono variabili in `:root`, campionate dal riferimento, ad esempio `--background: #1a191e`, `--cyan`, `--violet` e `--quote-blue`. Il blocco `@theme inline` le espone a Tailwind come classi: `bg-background`, `text-cyan`, `bg-quote-blue`…
+- **Colori:** sono variabili in `:root`, campionate dal riferimento, ad esempio `--background: #1a191e`, `--cyan`, `--violet` e `--contact`. Il blocco `@theme inline` le espone a Tailwind come classi: `bg-background`, `text-cyan`, `bg-contact`…
 - **Font:** `font-sans` e `font-heading` usano Poppins, `font-mono` usa Roboto Mono.
 - **Animazioni**, nel blocco `@theme`:
   - `card-breathe`: il "respiro" delle schede;
@@ -259,8 +273,11 @@ Non ci sono test automatici: le verifiche si fanno con lint, tipi e controllo ne
 | Cambiare larghezza o sfumatura della riga | `sections/hero.tsx` | `max-w-4xl` e `mask-x-from-85%` |
 | Aggiungere un progetto | `site.ts` → `projects` | Aggiungere un oggetto. Con `details` ha una pagina `/progetti/<id>`, compare nella barra «Progetto successivo» e va rigenerato con `npm run build`. Le schermate vanno in `public/projects/<id>/` |
 | Cambiare la scritta al passaggio sulla scheda | `site.ts` → `projectsSection.openLabel`; effetto in `project-grid.tsx` | Testo in `site.ts`; colore e dissolvenza nelle classi `group-hover:` |
+| Cambiare indirizzo o oggetto dell'email dei contatti | `site.ts` → `site.email` e `contact.emailSubject` | Il link a Gmail in `contact.tsx` si aggiorna da solo. Per il form, la casella di arrivo è quella collegata alla chiave Web3Forms: se cambia l'indirizzo serve una chiave nuova |
+| Cambiare i testi o il limite di righe del form | `site.ts` → `contact.form` | Etichette, errori, stati e `maxLines` |
+| Impostare la chiave del form | `.env.local` (e le variabili d'ambiente dell'hosting) | `NEXT_PUBLIC_WEB3FORMS_KEY=…`, poi riavviare `npm run dev` o rifare la build |
 | Cambiare i colori del sito | `globals.css` → `:root` | Modificare le variabili |
-| Cambiare la forma del nastro della hero | `src/components/hero-waves.tsx` | Modificare `CONTROL_POINTS` |
+| Cambiare la forma del nastro della hero | `src/lib/hero-waves.ts` | Modificare `CONTROL_POINTS`; numero di linee, colori e velocità sono nelle costanti accanto (`LINES`, `COLORS`, `TWIST_SPEED`) |
 | Aggiungere una voce al menu | `site.ts` → `navItems` e una sezione con lo stesso `id` | L'ancora deve corrispondere all'`id` di `Section` |
 | Aggiungere un componente UI | Terminale | `npx shadcn add <nome>` |
 
@@ -274,6 +291,9 @@ Una riga per commit, dal più recente. Per i dettagli di ogni funzionalità c'è
 
 | Data | Commit | Modifica | Documento |
 | --- | --- | --- | --- |
+| 2026-10-23 | `422b92c` | Form di contatto con Web3Forms al posto dei punti di forza; email del sito g.simone1927@gmail.com | `2026-10-23-form-contatti.md` |
+| 2026-10-23 | `e82a9cf` | L'email dei contatti apre la scrittura in Gmail in una nuova scheda, al posto di `mailto:` | `2026-10-23-email-apre-gmail.md` |
+| 2026-10-23 | `c0d568c` | Hero fluida anche sui PC poco potenti: nastro in WebGL dentro un Web Worker, a 30 fps | `2026-10-23-ottimizzazione-hero.md` |
 | 2026-10-22 | `59a026d` | Eliminati i loghi social inutilizzati in `public/socials/` | — |
 | 2026-10-22 | — | Creato questo documento e la regola in `CLAUDE.md` per aggiornarlo dopo ogni commit | — |
 | 2026-10-22 | `342d8f9` | Barra «Progetto successivo» in fondo alle pagine dei progetti | `2026-10-22-progetto-successivo.md` |

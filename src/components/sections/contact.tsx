@@ -1,60 +1,21 @@
-import { Palette, Puzzle, Users, type LucideIcon } from "lucide-react";
-
+import { ContactForm } from "@/components/contact-form";
 import { CopyEmailButton } from "@/components/copy-email-button";
 import { Reveal } from "@/components/reveal";
 import { Section } from "@/components/section";
-import { contact, site, type Strength } from "@/lib/site";
-import { cn } from "@/lib/utils";
-
-const icons: Record<Strength["icon"], LucideIcon> = {
-  "problem-solving": Puzzle,
-  team: Users,
-  design: Palette,
-};
-
-const colors: Record<Strength["color"], string> = {
-  lilac: "bg-quote-lilac",
-  blue: "bg-quote-blue",
-  violet: "bg-quote-violet",
-};
-
-// Il primo riquadro occupa tutta l'altezza, gli altri due si dividono la colonna di destra
-const placement = [
-  "lg:row-span-2",
-  "lg:col-start-3 lg:row-start-1",
-  "lg:col-start-3 lg:row-start-2",
-];
+import { contact, site } from "@/lib/site";
 
 const linkClass = "w-fit font-mono text-[1.05rem] font-semibold transition-colors hover:text-cyan";
 
-function StrengthCard({ strength, className }: { strength: Strength; className?: string }) {
-  const Icon = icons[strength.icon];
-  return (
-    <figure className={cn("relative flex flex-col p-7 text-white", colors[strength.color], className)}>
-      <div className="flex items-start justify-between">
-        <span aria-hidden="true" className="h-12 font-serif text-[6.5rem] leading-[0.9] font-bold text-white/45">
-          &rdquo;
-        </span>
-        <span className="flex size-[4.75rem] items-center justify-center rounded-full border-[3px] border-white bg-black/15">
-          <Icon aria-hidden="true" strokeWidth={1.5} className="size-8" />
-        </span>
-      </div>
-      <blockquote className="mt-8 text-[0.95rem] leading-5">
-        <p>{strength.text}</p>
-      </blockquote>
-      <figcaption className="mt-6">
-        <p className="text-base font-bold">- {strength.title}</p>
-        <p className="text-sm font-medium">{strength.source}</p>
-      </figcaption>
-    </figure>
-  );
-}
+// Finestra di scrittura di Gmail in una nuova scheda, con destinatario e oggetto già compilati.
+// Un sito non può sapere quale servizio di posta usa chi lo visita, e mailto: su molti PC non apre nulla.
+const composeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(site.email)}&su=${encodeURIComponent(contact.emailSubject)}`;
 
+// Fascia dei contatti, che fa anche da footer: testi ed email a sinistra, form a destra
 export function Contact() {
   return (
     <Section id="contact" className="bg-contact">
-      <div className="mx-auto grid max-w-[1420px] lg:grid-cols-[1fr_364px_444px] lg:grid-rows-[284px_auto]">
-        <Reveal className="px-4 py-14 sm:px-6 lg:row-span-2 lg:py-12 lg:pr-10 lg:pl-0">
+      <div className="mx-auto grid max-w-[1420px] lg:grid-cols-[minmax(0,1fr)_minmax(0,808px)]">
+        <Reveal className="px-4 py-14 sm:px-6 lg:py-12 lg:pr-10 lg:pl-0">
           <h2 id="contact-title" className="max-w-[21rem] font-heading text-[2.1rem] leading-[1.3] font-bold">
             {contact.title}
           </h2>
@@ -64,10 +25,13 @@ export function Contact() {
 
           <p className="mt-16 lg:mt-28">
             <a
-              href={`mailto:${site.email}?subject=${encodeURIComponent(contact.emailSubject)}`}
+              href={composeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="marker-underline font-mono text-lg font-medium wrap-anywhere [--marker:#8d47de] sm:text-[1.4rem]"
             >
               {site.email}
+              <span className="sr-only"> (si apre Gmail in una nuova scheda)</span>
             </a>
           </p>
           <ul className="mt-4 flex flex-col gap-2">
@@ -77,9 +41,9 @@ export function Contact() {
           </ul>
         </Reveal>
 
-        {contact.strengths.map((strength, index) => (
-          <StrengthCard key={strength.title} strength={strength} className={placement[index]} />
-        ))}
+        <Reveal className="min-w-0 border-white/8 bg-card px-4 pt-12 pb-14 sm:px-10 lg:border-l lg:px-14">
+          <ContactForm />
+        </Reveal>
       </div>
     </Section>
   );

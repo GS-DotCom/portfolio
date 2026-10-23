@@ -5,11 +5,12 @@ export const site = {
   role: "Sviluppatore Web .NET e Sistemista IT",
   location: "Roma, Italia",
   available: true,
-  email: "tarquinioprisco96@gmail.com",
+  email: "g.simone1927@gmail.com",
   // Foto rotonda della hero, da mettere in public/ (es. "/foto.jpg"). Vuota mostra le iniziali.
   photo: "/pesso.jpg",
   description:
-    "Sviluppo applicazioni web in ambiente .NET e mi occupo di reti e sistemi aziendali. Cerco un'opportunità stabile in cui crescere e contribuire a progetti concreti.",
+    "Sviluppo applicazioni mobile/web fullstack, utilizzando Typescript, React, Next.js e TailwindCSS. Ho avuto esperienza di reti e sistemi intranet aziendali. Ad Ottobre 2026 ho concluso il mio percorso formativo Formatemp come z/OS System Administrator." +
+    "sono sempre alla ricerca di un'opportunità stabile in cui crescere e contribuire a progetti concreti e coinvolgenti per la mia crescita professionale.",
   socials: {
     github: "https://github.com/GS-DotCom",
     linkedin: "https://www.linkedin.com/in/giuliano-simone-713196358/",
@@ -28,7 +29,7 @@ export const navItems = [
 ];
 
 export const hero = {
-  subtitle: "Sviluppatore Web .NET e Sistemista z/OS.",
+  subtitle: "Mobile/Web App developer & z/OS System Administrator.",
   // Al posto di "As featured in" del riferimento
   technologiesLabel: "Tecnologie che uso",
   technologies: ["C#", ".NET", "SQL Server", "JavaScript", "HTML", "CSS", "IBM", "DB2", "Git", "React", "Next.js", "TypeScript", "Tailwind CSS", "Claude Code", "GitHub"],
@@ -58,26 +59,26 @@ export const expertise = {
     {
       icon: "web",
       title: "Sviluppo Web",
-      subtitle: ".NET e C#",
+      subtitle: ".NET, TypeScript, React e Next.js",
       color: "pink",
       description:
-        "Applicazioni web in ASP.NET Core MVC, Razor e C#, con JavaScript, Bootstrap e WPF per il desktop.",
+        "Applicazioni web multiservizi in ASP.NET, Razor e C#, implementando JavaScript/TypeScript, React e Next.js(Turbopack). Applicazioni legacy sviluppate in REXX, JCL e COBOL.",
     },
     {
       icon: "database",
       title: "Database",
-      subtitle: "SQL Server",
+      subtitle: "SQL Server/DB2",
       color: "blue",
       description:
-        "Database relazionali su SQL Server e MySQL. Ho migrato un gestionale da Access a SQL Server.",
+        "Sviluppo e analisi dei dati, StoreProcedure e Query su database relazionali quali SQL Server, MySQL, DB2 e Access."
     },
     {
       icon: "network",
       title: "Sistemi e reti",
-      subtitle: "Firewall, CCNA",
+      subtitle: "Firewall, CCNA, RACF",
       color: "orange",
       description:
-        "Networking, firewall, switch e armadi server. Sto preparando la certificazione Cisco CCNA.",
+        "Networking, firewall, configurazione di switch e armadi server.Conoscenza di z/OS RACF in ambiente mainframe.",
     },
   ] satisfies ExpertiseItem[],
 };
@@ -171,31 +172,32 @@ export const projectPage = {
 
 // Sezione sul vibe coding: come nasce questo sito e con quali strumenti
 export const aiSection = {
-  titleLines: ["Vibe coding", "con Claude"],
+  titleLines: ["Vibe coding", "con Claude Code"],
   intro:
-    "Sto imparando a sviluppare in vibe coding: descrivo in italiano quello che voglio ottenere e lo costruisco insieme a un assistente AI. Uso Claude di Anthropic tramite Claude Code, dentro l'editor Cursor. Questo portfolio è il primo progetto nato così.",
+    "Implemento Claude Code di Anthropic in Cursor per sviluppare applicazioni e formarmi in autonomia sulle nuove tecnologie." +
+    " Con l'AI ho libero accesso a tutte le risorse per apprendere, svilupare, prototipare e testare le mie applicazioni, oltre che studiare i diversi modelli, le loro implementazioni e le loro limitazioni.",
   stepsTitle: "Workflow",
   steps: [
     {
       title: "Descrivo l'idea",
-      text: "Spiego cosa voglio, spesso partendo da uno screenshot o da un sito di riferimento.",
+      text: "Spiego cosa voglio, spesso partendo da uno screenshot o da un sito di riferimento per poi personalizzare la mia idea.",
     },
     {
       title: "Prima il progetto",
-      text: "Claude scrive un documento con obiettivo, file da toccare e scelte aperte. Si parte solo dopo la mia conferma.",
+      text: "Claude scrive un documento con obiettivo, file da toccare e scelte aperte. Ogni modifica viene effettuata dopo ogni mia conferma, lavorando sia un manuale che in automatizzazione.",
     },
     {
       title: "Codice e verifica",
-      text: "Claude scrive il codice, lancia lint e controllo dei tipi e verifica il risultato nel browser, su desktop e su mobile.",
+      text: "Claude scrive il codice, io lo revisiono. Correggo e segnalo eventuali bug. Lancia il lint e la build, controllo dei tipi e verifica del risultato nel browser, su desktop e mobile.",
     },
     {
-      title: "Rivedo e decido",
-      text: "Guardo l'anteprima, chiedo ritocchi e approvo. Il codice resta mio: lo leggo, lo capisco e lo mantengo.",
+      title: "Code review",
+      text: "Guardo l'anteprima sul server locale, chiedo ritocchi e approvo. Il codice resta mio: lo leggo, lo capisco e lo mantengo.Il tutto viene trascritto sotto forma di documento.",
     },
   ],
   // Finto terminale decorativo: "prompt" è la richiesta, "reply" la risposta, "ok" un controllo superato
   terminal: [
-    { kind: "prompt", text: "aggiungi una sezione AI al menu" },
+    { kind: "prompt", text: "claude" },
     { kind: "reply", text: "Scrivo prima il documento di progetto in docs/." },
     { kind: "reply", text: "Fatto. Mi confermi il piano?" },
     { kind: "prompt", text: "confermo" },
@@ -206,11 +208,11 @@ export const aiSection = {
   stackTitle: "Tecnologie utilizzate per questo sito",
   stack: [
     { name: "Next.js 16", text: "App Router, Server Components e Turbopack" },
-    { name: "React 19", text: "Interfaccia a componenti" },
-    { name: "TypeScript", text: "Tipi su tutto il codice" },
+    { name: "React 19", text: "Interfaccia, componenti, stato" },
+    { name: "TypeScript", text: "Tipizzazione su tutto il codice" },
     { name: "Tailwind CSS 4", text: "Stili e tema scuro" },
     { name: "shadcn/ui e Base UI", text: "Componenti accessibili" },
-    { name: "Canvas 2D", text: "Il nastro animato della hero" },
+    { name: "WebGL", text: "Il nastro animato della hero, disegnato in un Web Worker" },
     { name: "Claude Code", text: "L'assistente che scrive il codice con me" },
     { name: "Cursor", text: "L'editor in cui lavoro" },
     { name: "Playwright", text: "Controllo del sito nel browser" },
@@ -239,7 +241,7 @@ export const experience: Experience[] = [
     period: "2025",
     description:
       "Supporto tecnico ai reparti aziendali e gestione della rete intranet, sia lato back-end sia lato front-end. Ho sviluppato competenze in networking e configurazione dei firewall, con attività dirette sull'infrastruttura hardware: armadi server e switch.",
-    tags: ["Networking", "Firewall", "Switch", "Armadi server", "Intranet", "Supporto tecnico"],
+    tags: ["Networking", "Firewall", "Switch", "Armadi server", "Intranet", "Supporto tecnico", "Ticketing", "Help desk", "CISCO CCNA"],
   },
   {
     role: "Sviluppatore Web junior .NET",
@@ -308,41 +310,39 @@ export const education = [
   }
 ];
 
-export type Strength = {
-  icon: "problem-solving" | "team" | "design";
-  color: "lilac" | "blue" | "violet";
-  text: string;
-  title: string;
-  source: string;
-};
-
 export const contact = {
   title: "Disponibile per nuove opportunità",
   intro:
     "Stai cercando qualcuno per il tuo team o hai un progetto da propormi? Scrivimi, sarò felice di parlarne.",
   emailSubject: "Proposta di lavoro",
-  // Al posto delle testimonianze del riferimento: punti di forza presi dal CV
-  strengths: [
-    {
-      icon: "problem-solving",
-      color: "lilac",
-      text: "Al centralino di assistenza ho imparato a prendere in carico un problema e a risolverlo nel minor tempo possibile. È lo stesso approccio che porto nello sviluppo e nella gestione dei sistemi: capire cosa non va, trovare la causa e sistemarla senza lasciare nulla a metà.",
-      title: "Problem solving",
-      source: "Help desk e customer care, Contaq",
+  // Form di contatto: i messaggi arrivano a site.email tramite Web3Forms (chiave in .env.local)
+  form: {
+    title: "Scrivimi un messaggio",
+    intro:
+      "Compila il modulo: il messaggio arriva direttamente nella mia casella e ti rispondo all'email che indichi.",
+    fields: {
+      firstName: { label: "Nome", placeholder: "Mario", error: "Scrivi il tuo nome." },
+      lastName: { label: "Cognome", placeholder: "Rossi", error: "Scrivi il tuo cognome." },
+      company: { label: "Nome società", placeholder: "Acme S.r.l." },
+      email: {
+        label: "Email",
+        placeholder: "mario.rossi@azienda.it",
+        error: "Scrivi un indirizzo email valido, ad esempio nome@azienda.it.",
+      },
+      message: { label: "Messaggio", placeholder: "Ciao Giuliano, ti scrivo per…", error: "Scrivi il messaggio." },
     },
-    {
-      icon: "team",
-      color: "blue",
-      text: "Ho sviluppato in team un gestionale per impianti sportivi e, in autonomia, il porting dei suoi database da Access a SQL Server.",
-      title: "In team e in autonomia",
-      source: "Sviluppatore .NET, T.S.I Group",
-    },
-    {
-      icon: "design",
-      color: "violet",
-      text: "Il diploma da grafico pubblicitario e i tre anni alla Scuola del Fumetto Comix mi portano a curare anche l'aspetto visivo di quello che realizzo.",
-      title: "Cura visiva",
-      source: "Formazione artistica",
-    },
-  ] satisfies Strength[],
+    optional: "(facoltativo)",
+    maxLines: 50,
+    linesLabel: "righe",
+    send: "Invia",
+    sending: "Invio in corso…",
+    privacy: "Uso i tuoi dati solo per risponderti.",
+    failedTitle: "Il messaggio non è partito.",
+    failedText: "Controlla la connessione e premi di nuovo Invia, oppure scrivimi a",
+    sentTitle: "Messaggio inviato",
+    sentText: (name: string) => `Grazie ${name}, ho ricevuto il tuo messaggio. Ti rispondo presto a`,
+    again: "Scrivi un altro messaggio",
+    // Oggetto dell'email che ricevo
+    subject: (name: string) => `Nuovo messaggio dal portfolio: ${name}`,
+  },
 };
