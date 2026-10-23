@@ -11,8 +11,8 @@ export const site = {
   // Foto rotonda della hero, da mettere in public/ (es. "/foto.jpg"). Vuota mostra le iniziali.
   photo: "/pesso.jpg",
   description:
-    "Sviluppo applicazioni mobile/web fullstack, utilizzando Typescript, React, Next.js e TailwindCSS. Ho avuto esperienza di reti e sistemi intranet aziendali. Ad Ottobre 2026 ho concluso il mio percorso formativo Formatemp come z/OS System Administrator." +
-    "sono sempre alla ricerca di un'opportunità stabile in cui crescere e contribuire a progetti concreti e coinvolgenti per la mia crescita professionale.",
+    "Sviluppo applicazioni mobile/web fullstack, utilizzando TypeScript, React, Next.js e Tailwind CSS. Ho avuto esperienza di reti e sistemi intranet aziendali. A ottobre 2026 ho concluso il mio percorso formativo Formatemp come z/OS System Administrator." +
+    " Sono sempre alla ricerca di un'opportunità stabile in cui crescere e contribuire a progetti concreti e coinvolgenti per la mia crescita professionale.",
   socials: {
     github: "https://github.com/GS-DotCom",
     linkedin: "https://www.linkedin.com/in/giuliano-simone-713196358/",
@@ -64,7 +64,7 @@ export const expertise = {
       subtitle: ".NET, TypeScript, React e Next.js",
       color: "pink",
       description:
-        "Applicazioni web multiservizi in ASP.NET, Razor e C#, implementando JavaScript/TypeScript, React e Next.js(Turbopack). Applicazioni legacy sviluppate in REXX, JCL e COBOL.",
+        "Applicazioni web multiservizi in ASP.NET, Razor e C#, implementando JavaScript/TypeScript, React e Next.js (Turbopack). Applicazioni legacy sviluppate in REXX, JCL e COBOL.",
     },
     {
       icon: "database",
@@ -72,7 +72,7 @@ export const expertise = {
       subtitle: "SQL Server/DB2",
       color: "blue",
       description:
-        "Sviluppo e analisi dei dati, StoreProcedure e Query su database relazionali quali SQL Server, MySQL, DB2 e Access."
+        "Sviluppo e analisi dei dati, stored procedure e query su database relazionali quali SQL Server, MySQL, DB2 e Access."
     },
     {
       icon: "network",
@@ -80,7 +80,7 @@ export const expertise = {
       subtitle: "Firewall, CCNA, RACF",
       color: "orange",
       description:
-        "Networking, firewall, configurazione di switch e armadi server.Conoscenza di z/OS RACF in ambiente mainframe.",
+        "Networking, firewall, configurazione di switch e armadi server. Conoscenza di z/OS RACF in ambiente mainframe.",
     },
   ] satisfies ExpertiseItem[],
 };
@@ -261,7 +261,7 @@ export const aiSection = {
   titleLines: ["Vibe coding", "con Claude Code"],
   intro:
     "Implemento Claude Code di Anthropic in Cursor per sviluppare applicazioni e formarmi in autonomia sulle nuove tecnologie." +
-    " Con l'AI ho libero accesso a tutte le risorse per apprendere, svilupare, prototipare e testare le mie applicazioni, oltre che studiare i diversi modelli, le loro implementazioni e le loro limitazioni.",
+    " Con l'AI ho libero accesso a tutte le risorse per apprendere, sviluppare, prototipare e testare le mie applicazioni, oltre che studiare i diversi modelli, le loro implementazioni e le loro limitazioni.",
   stepsTitle: "Workflow",
   steps: [
     {
@@ -404,8 +404,7 @@ export const contact = {
   // Form di contatto: i messaggi arrivano a site.email tramite Web3Forms (chiave in .env.local)
   form: {
     title: "Scrivimi un messaggio",
-    intro:
-      "Compila il modulo: il messaggio arriva direttamente nella mia casella e ti rispondo all'email che indichi.",
+    intro: "Compila il modulo sottostante, verrai ricontattato alla mail indicata nel momento dell'invio.",
     fields: {
       firstName: { label: "Nome", placeholder: "Mario" },
       lastName: { label: "Cognome", placeholder: "Rossi" },

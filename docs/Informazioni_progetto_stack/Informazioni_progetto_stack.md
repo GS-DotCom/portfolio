@@ -4,7 +4,7 @@ Documento di riferimento del portfolio: le tecnologie usate, come funziona ogni 
 
 **Va aggiornato dopo ogni commit** (regola in `CLAUDE.md`): si aggiornano le sezioni che cambiano e si aggiunge una riga al [registro delle modifiche](#registro-delle-modifiche).
 
-Ultimo aggiornamento: 2026-10-23, dopo il commit `448ecab`.
+Ultimo aggiornamento: 2026-10-23, dopo il commit `27ae2bd`.
 
 ---
 
@@ -271,7 +271,26 @@ Non ci sono test automatici: le verifiche si fanno con lint, tipi e controllo ne
 3. lint, tipi e controllo nel browser;
 4. commit su un branch `feat/…`, un commit per funzionalità;
 5. aggiornamento di questo documento;
-6. PR verso `main` e merge.
+6. PR verso `main`: Vercel crea un'anteprima della PR;
+7. merge: Vercel pubblica `main` in produzione.
+
+**Pubblicazione su Vercel:**
+- **Progetto:** `giuliano-simone`, nello spazio `pesso1` (account tarquinioprisco96-6506). Indirizzo di produzione: https://giuliano-simone.vercel.app.
+- **Collegato a GitHub** (`GS-DotCom/portfolio`):
+  - ogni push su `main`, quindi ogni merge di una PR, fa partire la build e pubblica il sito in produzione in un paio di minuti;
+  - ogni altro branch, e ogni PR, ha un'anteprima con un indirizzo proprio, visibile solo a chi ha accesso al progetto Vercel.
+- **Autore dei commit:** sul piano gratuito Vercel pubblica solo i commit il cui autore è riconosciuto come proprietario del progetto. L'email di git (`git config user.email`) deve quindi essere tra quelle dell'account GitHub GS-DotCom, che oggi sono tarquinioprisco96@outlook.it e g.simone1927@gmail.com. Con un'email sconosciuta il deploy resta «Blocked» con il messaggio «GitHub couldn't verify an account for the commit», e un deploy bloccato non si può rilanciare: serve un commit nuovo.
+- **Variabili d'ambiente** (Settings → Environment Variables): `NEXT_PUBLIC_WEB3FORMS_KEY` per Production e Preview, di tipo «config», cioè pubblica: finisce nel JavaScript del sito, come deve essere per una chiave usata dal browser. Una variabile nuova o cambiata vale solo dalla build successiva.
+- **CLI:** `npx vercel@latest` (non è installata globalmente).
+  - `vercel ls`: i deploy;
+  - `vercel inspect <url>`: stato e durata della build;
+  - `vercel logs --deployment <url> --query 'level:error'`: errori; il piano gratuito conserva solo gli ultimi 30 minuti;
+  - `vercel env ls`: le variabili;
+  - `vercel deploy --prod`: pubblicazione a mano, senza git.
+
+  La cartella `.vercel/` collega la CLI al progetto ed è esclusa da git.
+- **`.vercelignore`** esclude dai deploy fatti con la CLI `references/` (materiale privato), `docs/` e i file locali. I deploy da GitHub partono dal repository, dove `references/` comunque non c'è.
+- **Pagine inesistenti:** mostrano la pagina 404 con `noindex`, ma rispondono con codice 200. Con il Partial Prerendering la parte comune della pagina parte prima che `notFound()` decida.
 
 **Problemi noti in sviluppo:**
 - Se Tailwind non vede una nuova animazione o utility in `globals.css`, si ferma il server, si cancella `.next` e si riavvia.
@@ -310,6 +329,8 @@ Una riga per commit, dal più recente. Per i dettagli di ogni funzionalità c'è
 
 | Data | Commit | Modifica | Documento |
 | --- | --- | --- | --- |
+| 2026-10-23 | `27ae2bd` | Nuovo testo sotto «Scrivimi un messaggio»; schermata del form rifatta | — |
+| 2026-10-23 | `0ae057d` | Sito pubblicato su Vercel e collegato a GitHub; `.vercelignore`; refusi nei testi di `site.ts` | — |
 | 2026-10-23 | `448ecab` | Sezione «In evidenza» sul form di contatto nella pagina del progetto Portfolio; pattern in `contact-rules.ts` | `2026-10-23-form-nella-pagina-progetto.md` |
 | 2026-10-23 | `9943bc6` | Controlli più severi su nome ed email; campi Telefono, Oggetto e consenso privacy; chiave Web3Forms nel documento | `2026-10-23-controlli-campi-form.md` |
 | 2026-10-23 | `422b92c` | Form di contatto con Web3Forms al posto dei punti di forza; email del sito g.simone1927@gmail.com | `2026-10-23-form-contatti.md` |
