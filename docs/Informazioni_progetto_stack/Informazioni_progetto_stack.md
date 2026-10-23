@@ -4,7 +4,7 @@ Documento di riferimento del portfolio: le tecnologie usate, come funziona ogni 
 
 **Va aggiornato dopo ogni commit** (regola in `CLAUDE.md`): si aggiornano le sezioni che cambiano e si aggiunge una riga al [registro delle modifiche](#registro-delle-modifiche).
 
-Ultimo aggiornamento: 2026-10-23, dopo il commit `0ae057d`.
+Ultimo aggiornamento: 2026-10-23, dopo il commit `27ae2bd`.
 
 ---
 
@@ -329,6 +329,7 @@ Una riga per commit, dal più recente. Per i dettagli di ogni funzionalità c'è
 
 | Data | Commit | Modifica | Documento |
 | --- | --- | --- | --- |
+| 2026-10-23 | `27ae2bd` | Nuovo testo sotto «Scrivimi un messaggio»; schermata del form rifatta | — |
 | 2026-10-23 | `0ae057d` | Sito pubblicato su Vercel e collegato a GitHub; `.vercelignore`; refusi nei testi di `site.ts` | — |
 | 2026-10-23 | `448ecab` | Sezione «In evidenza» sul form di contatto nella pagina del progetto Portfolio; pattern in `contact-rules.ts` | `2026-10-23-form-nella-pagina-progetto.md` |
 | 2026-10-23 | `9943bc6` | Controlli più severi su nome ed email; campi Telefono, Oggetto e consenso privacy; chiave Web3Forms nel documento | `2026-10-23-controlli-campi-form.md` |
