@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import { ProjectHighlight } from "@/components/project-highlight";
 import { Reveal } from "@/components/reveal";
 import { SiteHeader } from "@/components/site-header";
 import { getAdjacentProjects, getProject, projectPath, projectsWithDetails } from "@/lib/projects";
@@ -130,6 +131,8 @@ async function ProjectContent({ params }: Pick<PageProps<"/progetti/[slug]">, "p
           )}
         </div>
       </Reveal>
+
+      {details.highlight && <ProjectHighlight highlight={details.highlight} />}
 
       <div className="mt-20 space-y-4 sm:mt-28 sm:space-y-6">
         {details.gallery.map((image, index) => (

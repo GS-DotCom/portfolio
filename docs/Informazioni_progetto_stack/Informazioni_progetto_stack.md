@@ -4,7 +4,7 @@ Documento di riferimento del portfolio: le tecnologie usate, come funziona ogni 
 
 **Va aggiornato dopo ogni commit** (regola in `CLAUDE.md`): si aggiornano le sezioni che cambiano e si aggiunge una riga al [registro delle modifiche](#registro-delle-modifiche).
 
-Ultimo aggiornamento: 2026-10-23, dopo il commit `422b92c`.
+Ultimo aggiornamento: 2026-10-23, dopo il commit `448ecab`.
 
 ---
 
@@ -69,6 +69,7 @@ src/
 │  ├─ hero-waves.worker.ts       ← Web Worker che disegna il nastro
 │  ├─ tech-logos.tsx             ← loghi delle tecnologie della hero
 │  ├─ project-grid.tsx · project-cover.tsx                  ← griglia e copertine dei progetti
+│  ├─ project-highlight.tsx      ← sezione «In evidenza» della pagina di un progetto
 │  ├─ experience-timeline.tsx    ← linea del tempo delle esperienze
 │  ├─ copy-email-button.tsx      ← pulsante "copia email"
 │  ├─ contact-form.tsx           ← form di contatto (invio con Web3Forms)
@@ -77,13 +78,14 @@ src/
 └─ lib/
    ├─ site.ts                    ← TUTTI i contenuti del sito
    ├─ projects.ts                ← funzioni sui progetti (indirizzi, precedente/successivo)
+   ├─ contact-rules.ts           ← pattern dei campi del form, condivisi con la pagina del progetto
    ├─ hero-waves.ts              ← disegno del nastro della hero (WebGL e canvas 2D)
    └─ utils.ts                   ← riesporta cn
 
 public/                          ← file serviti così come sono
 ├─ pesso.jpg                     ← foto della hero
 ├─ projects/portfolio-desktop.png, portfolio-mobile.png   ← copertine della scheda progetto
-└─ projects/portfolio/*.png      ← galleria della pagina del portfolio
+└─ projects/portfolio/*.png      ← galleria della pagina del portfolio e schermata del form (form-contatti.png)
 
 docs/                            ← documenti di progetto (uno per funzionalità)
 └─ Informazioni_progetto_stack/  ← questo documento
@@ -98,7 +100,7 @@ CLAUDE.md · AGENTS.md            ← istruzioni per Claude Code
 
 Next.js con l'App Router distingue due tipi di componenti:
 
-- **Server Components** (predefiniti): sono eseguiti in fase di build o sul server e producono HTML. Non mandano JavaScript al browser. Sono tutte le sezioni, la pagina del progetto, `section.tsx`, `project-cover.tsx`, `experience-timeline.tsx`, `tech-logos.tsx` e `icons.tsx`.
+- **Server Components** (predefiniti): sono eseguiti in fase di build o sul server e producono HTML. Non mandano JavaScript al browser. Sono tutte le sezioni, la pagina del progetto, `section.tsx`, `project-cover.tsx`, `project-highlight.tsx`, `experience-timeline.tsx`, `tech-logos.tsx` e `icons.tsx`.
 - **Client Components** (file che iniziano con `"use client"`): sono anche eseguiti nel browser, dove servono stato, effetti o eventi. Sono:
   - `header-shell`: sfondo dell'header dopo lo scorrimento;
   - `mobile-nav`: apertura del menu;
@@ -125,9 +127,17 @@ Mostra `SiteHeader` e, in ordine, `Hero`, `Expertise`, `Projects`, `Ai`, `Experi
 
 - **`generateStaticParams`** genera una pagina per ogni progetto con `details`.
 - **`generateMetadata`** imposta il titolo della scheda del browser.
-- **Struttura:** header, «← Torna ai progetti», categoria e titolo, percorso (Home › Progetti › titolo), descrizione con «Cliente» e «Stack tecnologico», link «Apri il progetto» (solo se c'è `url`), galleria di schermate, barra «Progetto successivo» (solo con almeno due progetti) e footer.
+- **Struttura:** header, «← Torna ai progetti», categoria e titolo, percorso (Home › Progetti › titolo), descrizione con «Cliente» e «Stack tecnologico», link «Apri il progetto» (solo se c'è `url`), sezione «In evidenza» (solo se c'è `details.highlight`), galleria di schermate, barra «Progetto successivo» (solo con almeno due progetti) e footer.
 - **App Shell e Suspense:** header, pulsante indietro e footer non dipendono dal progetto. Tutto il resto sta in `ProjectContent`, dentro `<Suspense>`, come richiede il Partial Prefetching.
 - **Slug sconosciuto:** porta alla pagina 404 con `notFound()`.
+- **Sezione «In evidenza»** (`project-highlight.tsx`): racconta una funzionalità come competenza. Per il portfolio è il form di contatto, con:
+  - un paragrafo introduttivo, dove `**…**` diventa grassetto;
+  - la schermata del form con un errore in vista;
+  - i controlli sui campi con le regex, prese da `contact-rules.ts`;
+  - un riquadro in stile terminale con la chiamata all'API di Web3Forms, colorato senza librerie;
+  - i punti su esperienza d'uso e accessibilità.
+
+  I contenuti sono nel campo facoltativo `details.highlight` del progetto in `site.ts` (tipo `ProjectHighlight`).
 
 ---
 
@@ -193,10 +203,17 @@ Due linee del tempo verticali, con linea bianca, cerchi viola e schede bianche: 
 ### Contatti: `sections/contact.tsx`, `copy-email-button.tsx`, `contact-form.tsx`
 Due colonne, una sotto l'altra su mobile. A sinistra il titolo, il testo, l'email e il pulsante «copia»; a destra, su sfondo `bg-card`, il form di contatto. Il clic sull'email apre in una nuova scheda la finestra di scrittura di Gmail (`mail.google.com/mail/?view=cm`), con destinatario `site.email` e oggetto `contact.emailSubject`; non si usa `mailto:`, che su molti PC non apre nulla. **`copy-email-button.tsx`** (client) copia l'indirizzo negli appunti (`navigator.clipboard`) e dopo 2,5 secondi torna allo stato iniziale.
 
-**`contact-form.tsx`** (client): il form con Nome, Cognome, Nome società (facoltativo), Email e Messaggio. I testi sono in `contact.form` di `site.ts`.
+**`contact-form.tsx`** (client): il form con Nome, Cognome, Nome società (facoltativo), Email, Telefono (facoltativo), Oggetto (facoltativo), Messaggio e consenso privacy. I testi, compresi i messaggi di errore (`contact.form.errors`), sono in `contact.form` di `site.ts`.
+- **Regole** (sui valori dopo il `trim`; i pattern stanno in `src/lib/contact-rules.ts`, condivisi con la pagina del progetto):
+  - Nome e Cognome: `^[A-Za-zÀ-ÖØ-öø-ÿ' -]{2,50}$`, con almeno una lettera; l'apostrofo tipografico `’` vale come `'`;
+  - Email: `^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$`, una sola `@`, niente `..` né punti all'inizio, alla fine o accanto alla `@`, al massimo 254 caratteri;
+  - Telefono: se compilato, `^\+?[0-9\s-]{6,15}$`;
+  - Oggetto: al massimo 50 caratteri, con contatore; se c'è, diventa l'oggetto dell'email ricevuta;
+  - Privacy: casella obbligatoria, mai spuntata in partenza, con sotto una breve informativa sempre visibile (`privacyText`).
 - **Messaggio:** al massimo 50 righe (`contact.form.maxLines`) e 4000 caratteri. Le righe in più si tagliano mentre si scrive e il contatore «N / 50 righe» si colora quando il limite è raggiunto.
 - **Errori dei campi:** compaiono al primo clic su «Invia» e si aggiornano mentre si corregge. Il focus va sul primo campo sbagliato e i campi hanno `aria-invalid` e `aria-describedby`.
 - **Invio:** una `fetch` dal browser a `https://api.web3forms.com/submit`, con la chiave `NEXT_PUBLIC_WEB3FORMS_KEY` di `.env.local`. È una chiave pubblica: permette solo di mandare messaggi alla casella collegata. Web3Forms inoltra il messaggio a `site.email` con l'oggetto «Nuovo messaggio dal portfolio: Nome Cognome» e il mittente come «Rispondi a». Un campo nascosto `botcheck` fa da trappola per i bot.
+- **Chiave Web3Forms:** `b9ec21fe-706d-49c3-9902-7079ed47e149`, collegata a g.simone1927@gmail.com. Va in `.env.local` come `NEXT_PUBLIC_WEB3FORMS_KEY` e nelle variabili d'ambiente dell'hosting. È pubblica per natura, perché finisce comunque nel JavaScript del sito pubblicato: permette solo di mandare messaggi a quella casella. Se viene usata per spam, se ne crea una nuova su web3forms.com.
 - **Stati:** «Invio in corso…» con il tasto disattivato; poi la conferma «Messaggio inviato», che riceve il focus e ha «Scrivi un altro messaggio», oppure un avviso `role="alert"` sopra i campi, con i dati che restano compilati. Senza chiave il form mostra l'avviso e la console spiega il motivo.
 
 ### Componenti UI (`components/ui/`, generati da shadcn)
@@ -274,14 +291,16 @@ Non ci sono test automatici: le verifiche si fanno con lint, tipi e controllo ne
 | Aggiungere un progetto | `site.ts` → `projects` | Aggiungere un oggetto. Con `details` ha una pagina `/progetti/<id>`, compare nella barra «Progetto successivo» e va rigenerato con `npm run build`. Le schermate vanno in `public/projects/<id>/` |
 | Cambiare la scritta al passaggio sulla scheda | `site.ts` → `projectsSection.openLabel`; effetto in `project-grid.tsx` | Testo in `site.ts`; colore e dissolvenza nelle classi `group-hover:` |
 | Cambiare indirizzo o oggetto dell'email dei contatti | `site.ts` → `site.email` e `contact.emailSubject` | Il link a Gmail in `contact.tsx` si aggiorna da solo. Per il form, la casella di arrivo è quella collegata alla chiave Web3Forms: se cambia l'indirizzo serve una chiave nuova |
-| Cambiare i testi o il limite di righe del form | `site.ts` → `contact.form` | Etichette, errori, stati e `maxLines` |
-| Impostare la chiave del form | `.env.local` (e le variabili d'ambiente dell'hosting) | `NEXT_PUBLIC_WEB3FORMS_KEY=…`, poi riavviare `npm run dev` o rifare la build |
+| Cambiare i testi o il limite di righe del form | `site.ts` → `contact.form` | Etichette, errori (`errors`), informativa (`privacyText`), stati, `maxLines` e `subjectMaxLength` |
+| Cambiare una regola dei campi | `src/lib/contact-rules.ts` (pattern) e `contact-form.tsx` → `rules`, `nameError`, `emailError` | Ogni regola restituisce il messaggio di errore preso da `contact.form.errors`, oppure `null`. La pagina del progetto mostra i pattern aggiornati da sola |
+| Impostare la chiave del form | `.env.local` (e le variabili d'ambiente dell'hosting) | `NEXT_PUBLIC_WEB3FORMS_KEY=b9ec21fe-706d-49c3-9902-7079ed47e149` (la chiave è anche nella sezione Contatti). Il server di sviluppo ricarica `.env.local` da solo; per la produzione va rifatta la build |
 | Cambiare i colori del sito | `globals.css` → `:root` | Modificare le variabili |
 | Cambiare la forma del nastro della hero | `src/lib/hero-waves.ts` | Modificare `CONTROL_POINTS`; numero di linee, colori e velocità sono nelle costanti accanto (`LINES`, `COLORS`, `TWIST_SPEED`) |
 | Aggiungere una voce al menu | `site.ts` → `navItems` e una sezione con lo stesso `id` | L'ancora deve corrispondere all'`id` di `Section` |
+| Aggiungere la sezione «In evidenza» a un progetto | `site.ts` → `details.highlight` del progetto | Compilare i campi di `ProjectHighlight`; la schermata va in `public/projects/<id>/` |
 | Aggiungere un componente UI | Terminale | `npx shadcn add <nome>` |
 
-Quando cambia la hero vanno rifatti gli screenshot `public/projects/portfolio-desktop.png` e `public/projects/portfolio/hero.png`, a 1440 × 900.
+Quando cambia la hero vanno rifatti gli screenshot `public/projects/portfolio-desktop.png` e `public/projects/portfolio/hero.png`, a 1440 × 900. Quando cambia il form va rifatta `public/projects/portfolio/form-contatti.png`: il pannello del form a 1440 px, compilato, con un errore in vista (808 × 1053).
 
 ---
 
@@ -291,6 +310,8 @@ Una riga per commit, dal più recente. Per i dettagli di ogni funzionalità c'è
 
 | Data | Commit | Modifica | Documento |
 | --- | --- | --- | --- |
+| 2026-10-23 | `448ecab` | Sezione «In evidenza» sul form di contatto nella pagina del progetto Portfolio; pattern in `contact-rules.ts` | `2026-10-23-form-nella-pagina-progetto.md` |
+| 2026-10-23 | `9943bc6` | Controlli più severi su nome ed email; campi Telefono, Oggetto e consenso privacy; chiave Web3Forms nel documento | `2026-10-23-controlli-campi-form.md` |
 | 2026-10-23 | `422b92c` | Form di contatto con Web3Forms al posto dei punti di forza; email del sito g.simone1927@gmail.com | `2026-10-23-form-contatti.md` |
 | 2026-10-23 | `e82a9cf` | L'email dei contatti apre la scrittura in Gmail in una nuova scheda, al posto di `mailto:` | `2026-10-23-email-apre-gmail.md` |
 | 2026-10-23 | `c0d568c` | Hero fluida anche sui PC poco potenti: nastro in WebGL dentro un Web Worker, a 30 fps | `2026-10-23-ottimizzazione-hero.md` |

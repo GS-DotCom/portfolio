@@ -4,6 +4,7 @@ import { ArrowRight, Check, CircleAlert, LoaderCircle, Send } from "lucide-react
 import { useEffect, useRef, useState, type ReactNode, type SubmitEvent } from "react";
 import { flushSync } from "react-dom";
 
+import { EMAIL_PATTERN, LETTER_PATTERN, NAME_PATTERN, PHONE_PATTERN } from "@/lib/contact-rules";
 import { contact, site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -11,23 +12,74 @@ import { cn } from "@/lib/utils";
 // La chiave (pubblica: permette solo di inviare alla casella collegata) sta in .env.local.
 const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
 const text = contact.form;
+const errors = text.errors;
 
-type Values = { firstName: string; lastName: string; company: string; email: string; message: string };
+type Values = {
+  firstName: string;
+  lastName: string;
+  company: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+  privacy: boolean;
+};
 type Status = "idle" | "sending" | "sent" | "failed";
-type RequiredField = "firstName" | "lastName" | "email" | "message";
+type CheckedField = "firstName" | "lastName" | "email" | "phone" | "message" | "privacy";
 
-const emptyValues: Values = { firstName: "", lastName: "", company: "", email: "", message: "" };
+const emptyValues: Values = {
+  firstName: "",
+  lastName: "",
+  company: "",
+  email: "",
+  phone: "",
+  subject: "",
+  message: "",
+  privacy: false,
+};
 
-// Regole dei campi obbligatori, nell'ordine in cui compaiono: il primo sbagliato riceve il focus
-const rules: [RequiredField, (value: string) => boolean][] = [
-  ["firstName", (value) => value.trim() !== ""],
-  ["lastName", (value) => value.trim() !== ""],
-  ["email", (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())],
-  ["message", (value) => value.trim() !== ""],
+// L'apostrofo tipografico che i telefoni inseriscono da soli (’) vale come quello semplice
+function normalizeName(value: string) {
+  return value.trim().replace(/’/g, "'");
+}
+
+function nameError(value: string, empty: string) {
+  const name = normalizeName(value);
+  if (name === "") return empty;
+  if (name.length < 2 || name.length > 50) return errors.nameLength;
+  if (!NAME_PATTERN.test(name) || !LETTER_PATTERN.test(name)) return errors.nameChars;
+  return null;
+}
+
+function emailError(value: string) {
+  const email = value.trim();
+  if (email === "") return errors.emailEmpty;
+  if (/\s/.test(email)) return errors.emailSpaces;
+  if (email.split("@").length !== 2) return errors.emailAt;
+  if (email.length > 254) return errors.emailLength;
+  if (email.includes("..") || /^\.|\.$|\.@|@\./.test(email)) return errors.emailDots;
+  if (!EMAIL_PATTERN.test(email)) return errors.emailDomain;
+  return null;
+}
+
+// Regole dei campi, nell'ordine in cui compaiono: il primo sbagliato riceve il focus.
+// Ognuna restituisce il messaggio di errore, oppure null se il valore va bene.
+const rules: [CheckedField, (values: Values) => string | null][] = [
+  ["firstName", (values) => nameError(values.firstName, errors.firstNameEmpty)],
+  ["lastName", (values) => nameError(values.lastName, errors.lastNameEmpty)],
+  ["email", (values) => emailError(values.email)],
+  ["phone", ({ phone }) => (phone.trim() === "" || PHONE_PATTERN.test(phone.trim()) ? null : errors.phone)],
+  ["message", ({ message }) => (message.trim() === "" ? errors.message : null)],
+  ["privacy", ({ privacy }) => (privacy ? null : errors.privacy)],
 ];
 
-function invalidFields(values: Values): RequiredField[] {
-  return rules.filter(([field, isValid]) => !isValid(values[field])).map(([field]) => field);
+function findErrors(values: Values) {
+  const found: Partial<Record<CheckedField, string>> = {};
+  for (const [field, check] of rules) {
+    const error = check(values);
+    if (error) found[field] = error;
+  }
+  return found;
 }
 
 function lineCount(value: string) {
@@ -73,6 +125,21 @@ function Field({
   );
 }
 
+function Counter({ id, value, max, unit }: { id: string; value: number; max: number; unit?: string }) {
+  return (
+    <span
+      id={id}
+      className={cn(
+        "ml-auto shrink-0 font-medium text-muted-foreground tabular-nums",
+        value >= max && "font-semibold text-destructive"
+      )}
+    >
+      {value} / {max}
+      {unit && ` ${unit}`}
+    </span>
+  );
+}
+
 export function ContactForm() {
   const [values, setValues] = useState<Values>(emptyValues);
   const [status, setStatus] = useState<Status>("idle");
@@ -83,7 +150,7 @@ export function ContactForm() {
   const sentRef = useRef<HTMLDivElement>(null);
   const firstNameRef = useRef<HTMLInputElement>(null);
 
-  const invalid = attempted ? invalidFields(values) : [];
+  const fieldErrors = attempted ? findErrors(values) : {};
   const lines = lineCount(values.message);
 
   // Dopo l'invio il focus va sulla conferma, così il lettore di schermo la annuncia
@@ -92,7 +159,7 @@ export function ContactForm() {
     if (status === "failed") alertRef.current?.scrollIntoView({ block: "nearest" });
   }, [status]);
 
-  function update(field: keyof Values, value: string) {
+  function update<K extends keyof Values>(field: K, value: Values[K]) {
     setValues((current) => ({ ...current, [field]: value }));
   }
 
@@ -105,7 +172,8 @@ export function ContactForm() {
   async function submit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     setAttempted(true);
-    const [firstInvalid] = invalidFields(values);
+    const found = findErrors(values);
+    const firstInvalid = rules.map(([field]) => field).find((field) => found[field]);
     if (firstInvalid) {
       (formRef.current?.elements.namedItem(firstInvalid) as HTMLElement | null)?.focus();
       return;
@@ -117,7 +185,8 @@ export function ContactForm() {
     }
 
     setStatus("sending");
-    const name = `${values.firstName.trim()} ${values.lastName.trim()}`;
+    const name = `${normalizeName(values.firstName)} ${normalizeName(values.lastName)}`;
+    const subject = values.subject.trim();
     // Campo nascosto che compilano solo i bot: Web3Forms scarta i messaggi in cui è spuntato
     const botcheck = (formRef.current?.elements.namedItem("botcheck") as HTMLInputElement | null)?.checked ?? false;
     try {
@@ -126,12 +195,16 @@ export function ContactForm() {
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
           access_key: WEB3FORMS_KEY,
-          subject: text.subject(name),
+          subject: text.subject(name, subject),
           from_name: name,
           name,
           email: values.email.trim(),
           "Società": values.company.trim() || "—",
+          "Telefono": values.phone.trim() || "—",
+          "Oggetto": subject || "—",
           "Messaggio": values.message.trim(),
+          "Consenso privacy": "sì",
+          "Inviato il": new Date().toLocaleString("it-IT", { timeZone: "Europe/Rome" }),
           botcheck,
         }),
       });
@@ -162,7 +235,7 @@ export function ContactForm() {
         </span>
         <h3 className="font-heading text-[1.6rem] leading-tight font-bold">{text.sentTitle}</h3>
         <p className="max-w-lg leading-relaxed text-muted-foreground">
-          {text.sentText(values.firstName.trim())}{" "}
+          {text.sentText(normalizeName(values.firstName))}{" "}
           <span className="font-semibold text-foreground">{values.email.trim()}</span>.
         </p>
         <button
@@ -177,14 +250,13 @@ export function ContactForm() {
   }
 
   const sending = status === "sending";
-  const describedBy = (field: RequiredField, extra?: string) =>
-    [invalid.includes(field) ? `${field}-error` : "", extra ?? ""].filter(Boolean).join(" ") || undefined;
-  const fieldProps = (field: RequiredField) => ({
+  const describedBy = (field: string, ...extra: string[]) =>
+    [fieldErrors[field as CheckedField] ? `${field}-error` : "", ...extra].filter(Boolean).join(" ") || undefined;
+  const checkedProps = (field: Exclude<CheckedField, "privacy">) => ({
     id: field,
     name: field,
-    required: true,
     value: values[field],
-    "aria-invalid": invalid.includes(field) || undefined,
+    "aria-invalid": fieldErrors[field] ? true : undefined,
     "aria-describedby": describedBy(field),
   });
 
@@ -219,27 +291,29 @@ export function ContactForm() {
         )}
 
         <div className="grid gap-5 sm:grid-cols-2">
-          <Field id="firstName" label={text.fields.firstName.label} error={invalid.includes("firstName") ? text.fields.firstName.error : undefined}>
+          <Field id="firstName" label={text.fields.firstName.label} error={fieldErrors.firstName}>
             <input
               ref={firstNameRef}
               type="text"
+              required
               autoComplete="given-name"
-              maxLength={60}
+              maxLength={50}
               placeholder={text.fields.firstName.placeholder}
               onChange={(event) => update("firstName", event.target.value)}
               className={inputClass}
-              {...fieldProps("firstName")}
+              {...checkedProps("firstName")}
             />
           </Field>
-          <Field id="lastName" label={text.fields.lastName.label} error={invalid.includes("lastName") ? text.fields.lastName.error : undefined}>
+          <Field id="lastName" label={text.fields.lastName.label} error={fieldErrors.lastName}>
             <input
               type="text"
+              required
               autoComplete="family-name"
-              maxLength={60}
+              maxLength={50}
               placeholder={text.fields.lastName.placeholder}
               onChange={(event) => update("lastName", event.target.value)}
               className={inputClass}
-              {...fieldProps("lastName")}
+              {...checkedProps("lastName")}
             />
           </Field>
         </div>
@@ -258,15 +332,49 @@ export function ContactForm() {
               className={inputClass}
             />
           </Field>
-          <Field id="email" label={text.fields.email.label} error={invalid.includes("email") ? text.fields.email.error : undefined}>
+          <Field id="email" label={text.fields.email.label} error={fieldErrors.email}>
             <input
               type="email"
+              required
               autoComplete="email"
-              maxLength={120}
+              maxLength={254}
               placeholder={text.fields.email.placeholder}
               onChange={(event) => update("email", event.target.value)}
               className={inputClass}
-              {...fieldProps("email")}
+              {...checkedProps("email")}
+            />
+          </Field>
+        </div>
+
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field id="phone" label={text.fields.phone.label} optional error={fieldErrors.phone}>
+            <input
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              maxLength={16}
+              placeholder={text.fields.phone.placeholder}
+              onChange={(event) => update("phone", event.target.value)}
+              className={inputClass}
+              {...checkedProps("phone")}
+            />
+          </Field>
+          <Field
+            id="subject"
+            label={text.fields.subject.label}
+            optional
+            footer={<Counter id="subject-count" value={values.subject.length} max={text.subjectMaxLength} />}
+          >
+            <input
+              id="subject"
+              name="subject"
+              type="text"
+              maxLength={text.subjectMaxLength}
+              placeholder={text.fields.subject.placeholder}
+              value={values.subject}
+              onChange={(event) => update("subject", event.target.value)}
+              aria-describedby="subject-count"
+              className={inputClass}
             />
           </Field>
         </div>
@@ -274,35 +382,61 @@ export function ContactForm() {
         <Field
           id="message"
           label={text.fields.message.label}
-          error={invalid.includes("message") ? text.fields.message.error : undefined}
-          footer={
-            <span
-              id="message-count"
-              aria-live="polite"
-              className={cn(
-                "ml-auto shrink-0 font-medium text-muted-foreground tabular-nums",
-                lines >= text.maxLines && "font-semibold text-destructive"
-              )}
-            >
-              {lines} / {text.maxLines} {text.linesLabel}
-            </span>
-          }
+          error={fieldErrors.message}
+          footer={<Counter id="message-count" value={lines} max={text.maxLines} unit={text.linesLabel} />}
         >
           <textarea
             rows={8}
+            required
             maxLength={4000}
             placeholder={text.fields.message.placeholder}
             onChange={(event) => updateMessage(event.target.value)}
             className={cn(inputClass, "max-h-[32rem] min-h-48 resize-y")}
-            {...fieldProps("message")}
+            {...checkedProps("message")}
             aria-describedby={describedBy("message", "message-count")}
           />
         </Field>
 
+        {/* Consenso privacy: mai spuntato in partenza, con l'informativa sempre visibile sotto */}
+        <div className="grid gap-2">
+          <div className="flex items-start gap-3">
+            <span className="relative mt-px flex size-[22px] shrink-0">
+              <input
+                id="privacy"
+                name="privacy"
+                type="checkbox"
+                required
+                checked={values.privacy}
+                onChange={(event) => update("privacy", event.target.checked)}
+                aria-invalid={fieldErrors.privacy ? true : undefined}
+                aria-describedby={describedBy("privacy", "privacy-note")}
+                className="peer absolute inset-0 cursor-pointer appearance-none border-2 border-white/16 bg-white/4 transition-colors hover:border-white/32 checked:border-violet checked:bg-violet focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan aria-invalid:border-destructive"
+              />
+              {/* Segno di spunta sopra la casella quando è selezionata */}
+              <Check
+                aria-hidden="true"
+                strokeWidth={3}
+                className="pointer-events-none absolute inset-0 m-auto size-4 text-white opacity-0 peer-checked:opacity-100"
+              />
+            </span>
+            <label htmlFor="privacy" className="cursor-pointer text-[0.88rem] leading-normal text-muted-foreground">
+              {text.consent}
+            </label>
+          </div>
+          {fieldErrors.privacy && (
+            <span id="privacy-error" className="font-mono text-[0.8rem] leading-snug text-destructive">
+              {fieldErrors.privacy}
+            </span>
+          )}
+          <p id="privacy-note" className="max-w-[40rem] pl-[34px] text-[0.8rem] leading-normal text-muted-foreground">
+            <strong className="font-semibold text-foreground">{text.privacyTitle}</strong> {text.privacyText}
+          </p>
+        </div>
+
         {/* Trappola per i bot: invisibile e fuori dal tab */}
         <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
 
-        <div className="mt-1 flex flex-wrap items-center gap-x-5 gap-y-3.5">
+        <div className="mt-1">
           <button
             type="submit"
             disabled={sending}
@@ -315,7 +449,6 @@ export function ContactForm() {
               <ArrowRight aria-hidden="true" className="size-[18px]" />
             )}
           </button>
-          <p className="max-w-[26rem] text-[0.8rem] leading-snug text-muted-foreground">{text.privacy}</p>
         </div>
       </form>
     </div>
