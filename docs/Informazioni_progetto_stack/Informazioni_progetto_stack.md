@@ -197,6 +197,7 @@ Due colonne, una sotto l'altra su mobile. A sinistra il titolo, il testo, l'emai
 - **Messaggio:** al massimo 50 righe (`contact.form.maxLines`) e 4000 caratteri. Le righe in più si tagliano mentre si scrive e il contatore «N / 50 righe» si colora quando il limite è raggiunto.
 - **Errori dei campi:** compaiono al primo clic su «Invia» e si aggiornano mentre si corregge. Il focus va sul primo campo sbagliato e i campi hanno `aria-invalid` e `aria-describedby`.
 - **Invio:** una `fetch` dal browser a `https://api.web3forms.com/submit`, con la chiave `NEXT_PUBLIC_WEB3FORMS_KEY` di `.env.local`. È una chiave pubblica: permette solo di mandare messaggi alla casella collegata. Web3Forms inoltra il messaggio a `site.email` con l'oggetto «Nuovo messaggio dal portfolio: Nome Cognome» e il mittente come «Rispondi a». Un campo nascosto `botcheck` fa da trappola per i bot.
+- **Chiave Web3Forms:** `b9ec21fe-706d-49c3-9902-7079ed47e149`, collegata a g.simone1927@gmail.com. Va in `.env.local` come `NEXT_PUBLIC_WEB3FORMS_KEY` e nelle variabili d'ambiente dell'hosting. È pubblica per natura, perché finisce comunque nel JavaScript del sito pubblicato: permette solo di mandare messaggi a quella casella. Se viene usata per spam, se ne crea una nuova su web3forms.com.
 - **Stati:** «Invio in corso…» con il tasto disattivato; poi la conferma «Messaggio inviato», che riceve il focus e ha «Scrivi un altro messaggio», oppure un avviso `role="alert"` sopra i campi, con i dati che restano compilati. Senza chiave il form mostra l'avviso e la console spiega il motivo.
 
 ### Componenti UI (`components/ui/`, generati da shadcn)
@@ -275,7 +276,7 @@ Non ci sono test automatici: le verifiche si fanno con lint, tipi e controllo ne
 | Cambiare la scritta al passaggio sulla scheda | `site.ts` → `projectsSection.openLabel`; effetto in `project-grid.tsx` | Testo in `site.ts`; colore e dissolvenza nelle classi `group-hover:` |
 | Cambiare indirizzo o oggetto dell'email dei contatti | `site.ts` → `site.email` e `contact.emailSubject` | Il link a Gmail in `contact.tsx` si aggiorna da solo. Per il form, la casella di arrivo è quella collegata alla chiave Web3Forms: se cambia l'indirizzo serve una chiave nuova |
 | Cambiare i testi o il limite di righe del form | `site.ts` → `contact.form` | Etichette, errori, stati e `maxLines` |
-| Impostare la chiave del form | `.env.local` (e le variabili d'ambiente dell'hosting) | `NEXT_PUBLIC_WEB3FORMS_KEY=…`, poi riavviare `npm run dev` o rifare la build |
+| Impostare la chiave del form | `.env.local` (e le variabili d'ambiente dell'hosting) | `NEXT_PUBLIC_WEB3FORMS_KEY=b9ec21fe-706d-49c3-9902-7079ed47e149` (la chiave è anche nella sezione Contatti). Il server di sviluppo ricarica `.env.local` da solo; per la produzione va rifatta la build |
 | Cambiare i colori del sito | `globals.css` → `:root` | Modificare le variabili |
 | Cambiare la forma del nastro della hero | `src/lib/hero-waves.ts` | Modificare `CONTROL_POINTS`; numero di linee, colori e velocità sono nelle costanti accanto (`LINES`, `COLORS`, `TWIST_SPEED`) |
 | Aggiungere una voce al menu | `site.ts` → `navItems` e una sezione con lo stesso `id` | L'ancora deve corrispondere all'`id` di `Section` |
