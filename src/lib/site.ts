@@ -404,8 +404,7 @@ export const contact = {
   // Form di contatto: i messaggi arrivano a site.email tramite Web3Forms (chiave in .env.local)
   form: {
     title: "Scrivimi un messaggio",
-    intro:
-      "Compila il modulo: il messaggio arriva direttamente nella mia casella e ti rispondo all'email che indichi.",
+    intro: "Compila il modulo sottostante, verrai ricontattato alla mail indicata nel momento dell'invio.",
     fields: {
       firstName: { label: "Nome", placeholder: "Mario" },
       lastName: { label: "Cognome", placeholder: "Rossi" },
