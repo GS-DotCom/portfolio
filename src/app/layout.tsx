@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins, Roboto_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 
 import { CustomCursor } from "@/components/custom-cursor";
 import { site } from "@/lib/site";
@@ -34,6 +35,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col">
         {children}
         <CustomCursor />
+        {/* Vercel Web Analytics: conta le pagine viste, senza cookie (in sviluppo scrive solo in console) */}
+        <Analytics />
       </body>
     </html>
   );
