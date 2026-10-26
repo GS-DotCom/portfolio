@@ -1,7 +1,7 @@
 # Vercel Web Analytics
 
 Data: 2026-10-26
-Stato: approvato il 2026-10-26, con deployment tramite branch `feat/vercel-analytics` e PR; implementato
+Stato: approvato il 2026-10-26, con deployment tramite branch `feat/vercel-analytics` e PR; implementato. Il progetto Vercel risulta già collegato a GitHub (vedi "Pubblicazione" in `CLAUDE.md`), quindi il deployment di produzione parte dal merge in `main`.
 
 ## Obiettivo
 

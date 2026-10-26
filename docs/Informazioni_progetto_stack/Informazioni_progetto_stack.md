@@ -4,7 +4,7 @@ Documento di riferimento del portfolio: le tecnologie usate, come funziona ogni 
 
 **Va aggiornato dopo ogni commit** (regola in `CLAUDE.md`): si aggiornano le sezioni che cambiano e si aggiunge una riga al [registro delle modifiche](#registro-delle-modifiche).
 
-Ultimo aggiornamento: 2026-10-23, dopo il commit `27ae2bd`.
+Ultimo aggiornamento: 2026-10-26, dopo il commit `5870310`.
 
 ---
 
@@ -33,6 +33,7 @@ Ultimo aggiornamento: 2026-10-23, dopo il commit `27ae2bd`.
 | **class-variance-authority** | 0.7.1 | Definisce le varianti dei componenti UI, come `variant` e `size` del pulsante. |
 | **cn** | 0.5.0 | Unisce le classi Tailwind risolvendo i conflitti. Sostituisce `clsx` + `tailwind-merge`; si importa da `@/lib/utils`. |
 | **lucide-react** | 1.59.0 | Icone (frecce, menu, valigetta…). Non ha più le icone dei brand, quindi quelle sono SVG nostri. |
+| **@vercel/analytics** | 2.0.1 | Vercel Web Analytics: pagine viste, visitatori, provenienza e dispositivi, senza cookie. Il componente `<Analytics />` sta in `layout.tsx`; i dati si leggono nella scheda Analytics del progetto su Vercel. |
 | **next/font** (Google Fonts) | incluso in Next | Carica **Poppins** (titoli e testi) e **Roboto Mono** (menu e testi "in codice") senza richieste esterne a runtime. |
 | **ESLint** + eslint-config-next | 9.39.5 / 16.4.2 | Controllo statico del codice (`npm run lint`), con le regole di Next per Core Web Vitals e TypeScript. |
 
@@ -53,7 +54,7 @@ Loghi delle tecnologie (copiati come tracciati SVG, nessuna dipendenza): **Simpl
 ```
 src/
 ├─ app/                          ← routing: ogni cartella è un URL
-│  ├─ layout.tsx                 ← guscio HTML comune: font, tema scuro, cursore personalizzato
+│  ├─ layout.tsx                 ← guscio HTML comune: font, tema scuro, cursore personalizzato, Analytics
 │  ├─ page.tsx                   ← home "/": header + sezioni in ordine
 │  ├─ globals.css                ← tema (colori, font, animazioni) e utility Tailwind personalizzate
 │  ├─ favicon.ico
@@ -149,6 +150,7 @@ Mostra `SiteHeader` e, in ordine, `Hero`, `Expertise`, `Projects`, `Ai`, `Experi
   - Imposta `<html lang="it" class="dark">` e i font Poppins e Roboto Mono come variabili CSS.
   - `scroll-smooth` dà lo scorrimento morbido verso le ancore; `data-scroll-behavior="smooth"` lo disattiva nei cambi di pagina.
   - Mostra `CustomCursor` su tutte le pagine.
+  - Monta `<Analytics />` di `@vercel/analytics/next`, che registra ogni pagina vista, anche nella navigazione lato client verso `/progetti/<id>`. Raccoglie dati solo in produzione su Vercel, con Analytics abilitato nella dashboard; in sviluppo scrive gli eventi nella console del browser.
 - **`site-header.tsx`**: il menu desktop, centrato, con «// home», «// competenze»… e il numero in apice, generati da `navItems` di `site.ts`. Su mobile mostra solo `MobileNav`.
 - **`header-shell.tsx`** (client): l'header fisso. È trasparente sopra la hero e, dopo 24 px di scorrimento, prende lo sfondo della pagina con sfocatura (`data-scrolled`).
 - **`mobile-nav.tsx`** (client): il pulsante «Apri menu» apre un pannello laterale (`ui/sheet`, basato su Base UI). Cliccando un link il pannello si chiude.
@@ -281,7 +283,8 @@ Non ci sono test automatici: le verifiche si fanno con lint, tipi e controllo ne
   - ogni altro branch, e ogni PR, ha un'anteprima con un indirizzo proprio, visibile solo a chi ha accesso al progetto Vercel.
 - **Autore dei commit:** sul piano gratuito Vercel pubblica solo i commit il cui autore è riconosciuto come proprietario del progetto. L'email di git (`git config user.email`) deve quindi essere tra quelle dell'account GitHub GS-DotCom, che oggi sono tarquinioprisco96@outlook.it e g.simone1927@gmail.com. Con un'email sconosciuta il deploy resta «Blocked» con il messaggio «GitHub couldn't verify an account for the commit», e un deploy bloccato non si può rilanciare: serve un commit nuovo.
 - **Variabili d'ambiente** (Settings → Environment Variables): `NEXT_PUBLIC_WEB3FORMS_KEY` per Production e Preview, di tipo «config», cioè pubblica: finisce nel JavaScript del sito, come deve essere per una chiave usata dal browser. Una variabile nuova o cambiata vale solo dalla build successiva.
-- **CLI:** `npx vercel@latest` (non è installata globalmente).
+- **Web Analytics:** scheda Analytics del progetto. Va abilitata lì una volta (Enable); senza, `/_vercel/insights/*` risponde 404 e non si raccoglie niente. Gli ad blocker possono bloccare lo script, quindi i numeri sono per difetto.
+- **CLI:** installata globalmente (`npm i -g vercel`, 65.2.0 al 2026-10-26); in alternativa `npx vercel@latest`. Il plugin Vercel per Claude Code, Cursor e VS Code si installa con `npx plugins add vercel/vercel-plugin -y`.
   - `vercel ls`: i deploy;
   - `vercel inspect <url>`: stato e durata della build;
   - `vercel logs --deployment <url> --query 'level:error'`: errori; il piano gratuito conserva solo gli ultimi 30 minuti;
@@ -318,6 +321,7 @@ Non ci sono test automatici: le verifiche si fanno con lint, tipi e controllo ne
 | Aggiungere una voce al menu | `site.ts` → `navItems` e una sezione con lo stesso `id` | L'ancora deve corrispondere all'`id` di `Section` |
 | Aggiungere la sezione «In evidenza» a un progetto | `site.ts` → `details.highlight` del progetto | Compilare i campi di `ProjectHighlight`; la schermata va in `public/projects/<id>/` |
 | Aggiungere un componente UI | Terminale | `npx shadcn add <nome>` |
+| Vedere le visite al sito | Dashboard Vercel → progetto → Analytics | Nessun file da toccare; se non arrivano dati, controllare che Analytics sia abilitato e che `/_vercel/insights/view` risponda 200 |
 
 Quando cambia la hero vanno rifatti gli screenshot `public/projects/portfolio-desktop.png` e `public/projects/portfolio/hero.png`, a 1440 × 900. Quando cambia il form va rifatta `public/projects/portfolio/form-contatti.png`: il pannello del form a 1440 px, compilato, con un errore in vista (808 × 1053).
 
@@ -329,6 +333,7 @@ Una riga per commit, dal più recente. Per i dettagli di ogni funzionalità c'è
 
 | Data | Commit | Modifica | Documento |
 | --- | --- | --- | --- |
+| 2026-10-26 | `5870310` | Vercel Web Analytics: `@vercel/analytics` e `<Analytics />` nel layout | `2026-10-26-vercel-web-analytics.md` |
 | 2026-10-23 | `27ae2bd` | Nuovo testo sotto «Scrivimi un messaggio»; schermata del form rifatta | — |
 | 2026-10-23 | `0ae057d` | Sito pubblicato su Vercel e collegato a GitHub; `.vercelignore`; refusi nei testi di `site.ts` | — |
 | 2026-10-23 | `448ecab` | Sezione «In evidenza» sul form di contatto nella pagina del progetto Portfolio; pattern in `contact-rules.ts` | `2026-10-23-form-nella-pagina-progetto.md` |
