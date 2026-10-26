@@ -17,11 +17,15 @@ Contare le visite al sito con Vercel Web Analytics: pagine viste, visitatori, pr
 
 1. **Plugin Vercel per Claude Code:** `npx plugins add vercel/vercel-plugin`. Riguarda l'ambiente di lavoro e non tocca il codice del sito.
 2. **Pacchetto:** `npm i @vercel/analytics`, ultima versione 2.0.1. Finisce in `dependencies`.
-3. **Componente:** in `src/app/layout.tsx` si importa `Analytics` da `@vercel/analytics/next`, come indica la guida ufficiale per l'App Router. Lo si mette in `<body>`, dopo `{children}` e accanto a `<CustomCursor />`. È un Client Component che carica lo script `/_vercel/insights/script.js` e registra il cambio di pagina, anche passando dalla home a `/progetti/<id>`.
+3. **Componente:** in `src/app/layout.tsx` si importa `Analytics` da `@vercel/analytics/next`, come indica la guida ufficiale per l'App Router. Lo si mette in `<body>`, dopo `{children}` e accanto a `<CustomCursor />`. È un Client Component che carica lo script di Vercel e registra il cambio di pagina, anche passando dalla home a `/progetti/<id>`.
 4. **Verifica locale:** `npm run lint` e `npm run build`. La build controlla anche che il componente non dia problemi con `cacheComponents` e `partialPrefetching`, per esempio con letture dinamiche fuori da `<Suspense>`. In sviluppo il componente lavora in modalità debug: scrive gli eventi nella console del browser e non invia niente.
 5. **Abilitazione su Vercel:** nella dashboard, **Project → Analytics → Enable**. Senza questo passaggio lo script in produzione risponde 404 e non viene raccolto niente. Va fatto dall'utente nella dashboard, oppure dalla CLI se il plugin lo permette.
 6. **Collegamento e deployment:** `vercel link` collega la cartella al progetto esistente. Se il login non è ancora fatto, prima serve `vercel login`, che è interattivo: va lanciato con `! vercel login`. Poi si esegue `vercel --prod`.
-7. **Controllo dei dati:** si apre il sito in produzione e si controlla che la richiesta a `/_vercel/insights/view` parta e risponda 200, guardando la scheda Network con Playwright. Poi si verifica che la visita compaia nella scheda Analytics della dashboard. Possono servire alcuni minuti, e gli ad blocker possono bloccare lo script.
+7. **Controllo dei dati:** si apre il sito in produzione e si controlla che la richiesta `view` parta e risponda 200, guardando la scheda Network con Playwright. Poi si verifica che la visita compaia nella scheda Analytics della dashboard. Possono servire alcuni minuti, e gli ad blocker possono bloccare lo script.
+
+## Esito della verifica (2026-10-26)
+
+Lo script non si carica da `/_vercel/insights`, come pensato all'inizio, ma da un percorso offuscato proprio del progetto, `/dd4fb83b296897db/`. Da lì sono partite `GET …/script.js` e `POST …/view`, entrambe con risposta 200. `/_vercel/insights/script.js` risponde anch'esso 200, segno che Analytics è abilitato. La visita di prova è comparsa nella dashboard.
 
 ## File
 
