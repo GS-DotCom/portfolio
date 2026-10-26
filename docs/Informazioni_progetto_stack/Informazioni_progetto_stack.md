@@ -283,7 +283,7 @@ Non ci sono test automatici: le verifiche si fanno con lint, tipi e controllo ne
   - ogni altro branch, e ogni PR, ha un'anteprima con un indirizzo proprio, visibile solo a chi ha accesso al progetto Vercel.
 - **Autore dei commit:** sul piano gratuito Vercel pubblica solo i commit il cui autore è riconosciuto come proprietario del progetto. L'email di git (`git config user.email`) deve quindi essere tra quelle dell'account GitHub GS-DotCom, che oggi sono tarquinioprisco96@outlook.it e g.simone1927@gmail.com. Con un'email sconosciuta il deploy resta «Blocked» con il messaggio «GitHub couldn't verify an account for the commit», e un deploy bloccato non si può rilanciare: serve un commit nuovo.
 - **Variabili d'ambiente** (Settings → Environment Variables): `NEXT_PUBLIC_WEB3FORMS_KEY` per Production e Preview, di tipo «config», cioè pubblica: finisce nel JavaScript del sito, come deve essere per una chiave usata dal browser. Una variabile nuova o cambiata vale solo dalla build successiva.
-- **Web Analytics:** scheda Analytics del progetto. Va abilitata lì una volta (Enable); senza, `/_vercel/insights/*` risponde 404 e non si raccoglie niente. Gli ad blocker possono bloccare lo script, quindi i numeri sono per difetto.
+- **Web Analytics:** scheda Analytics del progetto. Va abilitata lì una volta (Enable); senza, `/_vercel/insights/script.js` risponde 404 e non si raccoglie niente. Nel sito lo script non si carica da `/_vercel/insights` ma da un percorso offuscato proprio del progetto, il 2026-10-26 `/dd4fb83b296897db/`, che rende più difficile il blocco da parte degli ad blocker. Da lì partono `script.js` (GET) e, a ogni pagina vista, `view` (POST): nella scheda Network del browser si cercano queste due richieste. Gli ad blocker possono bloccare lo script, quindi i numeri sono per difetto.
 - **CLI:** installata globalmente (`npm i -g vercel`, 65.2.0 al 2026-10-26); in alternativa `npx vercel@latest`. Il plugin Vercel per Claude Code, Cursor e VS Code si installa con `npx plugins add vercel/vercel-plugin -y`.
   - `vercel ls`: i deploy;
   - `vercel inspect <url>`: stato e durata della build;
@@ -321,7 +321,7 @@ Non ci sono test automatici: le verifiche si fanno con lint, tipi e controllo ne
 | Aggiungere una voce al menu | `site.ts` → `navItems` e una sezione con lo stesso `id` | L'ancora deve corrispondere all'`id` di `Section` |
 | Aggiungere la sezione «In evidenza» a un progetto | `site.ts` → `details.highlight` del progetto | Compilare i campi di `ProjectHighlight`; la schermata va in `public/projects/<id>/` |
 | Aggiungere un componente UI | Terminale | `npx shadcn add <nome>` |
-| Vedere le visite al sito | Dashboard Vercel → progetto → Analytics | Nessun file da toccare; se non arrivano dati, controllare che Analytics sia abilitato e che `/_vercel/insights/view` risponda 200 |
+| Vedere le visite al sito | Dashboard Vercel → progetto → Analytics | Nessun file da toccare; se non arrivano dati, controllare che Analytics sia abilitato e che nella scheda Network del sito in produzione la richiesta `POST …/view` (percorso offuscato, vedi «Web Analytics» nella sezione 9) risponda 200 |
 
 Quando cambia la hero vanno rifatti gli screenshot `public/projects/portfolio-desktop.png` e `public/projects/portfolio/hero.png`, a 1440 × 900. Quando cambia il form va rifatta `public/projects/portfolio/form-contatti.png`: il pannello del form a 1440 px, compilato, con un errore in vista (808 × 1053).
 
