@@ -1,9 +1,11 @@
 import { Database, Monitor, Network, type LucideIcon } from "lucide-react";
 import type { CSSProperties } from "react";
 
+import { CertificationCard } from "@/components/certification-card";
 import { Reveal } from "@/components/reveal";
 import { Section, SectionTitle } from "@/components/section";
-import { expertise, type ExpertiseItem } from "@/lib/site";
+import { certifications, certificationsSection, expertise, type ExpertiseItem } from "@/lib/site";
+import { cn } from "@/lib/utils";
 
 const icons: Record<ExpertiseItem["icon"], LucideIcon> = {
   web: Monitor,
@@ -87,20 +89,54 @@ export function Expertise() {
         </Reveal>
       </div>
 
-      <pre
-        aria-hidden="true"
-        className="pointer-events-none mx-auto -mt-2 hidden w-fit font-mono text-[0.7rem] leading-4 select-none md:block"
-      >
-        {codeLines.map((line, index) => (
-          <div key={index} className="border-l border-white/5" style={{ paddingLeft: `${line.indent * 1.25}rem` }}>
-            {line.parts.map(([kind, text], partIndex) => (
-              <span key={partIndex} className={codeColors[kind]}>
-                {text}
+      {certifications.length > 0 ? (
+        <div id="certifications" className="scroll-mt-20 px-4 pt-20 sm:px-6 sm:pt-24">
+          <Reveal className="text-center">
+            <h3 id="certifications-title" className="font-heading text-3xl font-semibold">
+              <span className="marker-underline" style={{ "--marker": "var(--cyan)" } as CSSProperties}>
+                {certificationsSection.title}
               </span>
+            </h3>
+            <p className="mt-4 text-[0.95rem] text-muted-foreground">{certificationsSection.intro}</p>
+          </Reveal>
+
+          {/* Al massimo tre badge per riga (3 × 18rem + 2 spazi da 2.5rem = 59rem): dal quarto si va
+              a capo, e le righe incomplete restano centrate. Su tablet due per riga, su telefono uno. */}
+          <ul className="mx-auto mt-12 flex max-w-[59rem] flex-wrap justify-center gap-10 sm:mt-14">
+            {certifications.map((certification, index) => (
+              <Reveal as="li" key={certification.url} delay={(index % 3) * 100}>
+                <CertificationCard certification={certification} />
+              </Reveal>
             ))}
-          </div>
-        ))}
-      </pre>
+          </ul>
+        </div>
+      ) : (
+        // Senza badge torna il frammento di codice decorativo sotto il riquadro delle competenze
+        <CodeFragment className="mx-auto -mt-2" />
+      )}
     </Section>
+  );
+}
+
+// Frammento di codice decorativo, solo da tablet in su
+function CodeFragment({ className }: { className?: string }) {
+  return (
+    <pre
+      aria-hidden="true"
+      className={cn(
+        "pointer-events-none hidden w-fit font-mono text-[0.7rem] leading-4 select-none md:block",
+        className
+      )}
+    >
+      {codeLines.map((line, index) => (
+        <div key={index} className="border-l border-white/5" style={{ paddingLeft: `${line.indent * 1.25}rem` }}>
+          {line.parts.map(([kind, text], partIndex) => (
+            <span key={partIndex} className={codeColors[kind]}>
+              {text}
+            </span>
+          ))}
+        </div>
+      ))}
+    </pre>
   );
 }
