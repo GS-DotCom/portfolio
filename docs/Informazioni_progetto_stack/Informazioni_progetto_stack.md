@@ -4,7 +4,7 @@ Documento di riferimento del portfolio: le tecnologie usate, come funziona ogni 
 
 **Va aggiornato dopo ogni commit** (regola in `CLAUDE.md`): si aggiornano le sezioni che cambiano e si aggiunge una riga al [registro delle modifiche](#registro-delle-modifiche).
 
-Ultimo aggiornamento: 2026-10-26, dopo il commit `5870310`.
+Ultimo aggiornamento: 2026-11-04, dopo il commit `c0d74e2`.
 
 ---
 
@@ -33,6 +33,7 @@ Ultimo aggiornamento: 2026-10-26, dopo il commit `5870310`.
 | **class-variance-authority** | 0.7.1 | Definisce le varianti dei componenti UI, come `variant` e `size` del pulsante. |
 | **cn** | 0.5.0 | Unisce le classi Tailwind risolvendo i conflitti. Sostituisce `clsx` + `tailwind-merge`; si importa da `@/lib/utils`. |
 | **lucide-react** | 1.59.0 | Icone (frecce, menu, valigetta…). Non ha più le icone dei brand, quindi quelle sono SVG nostri. |
+| **motion** | 14.9.1 | Animazioni in React (`motion/react`): inclinazione 3D, riflessi e molle della Comet Card dei badge. Il componente l'ha installato a mano: il registro di Aceternity non la elenca tra le dipendenze. |
 | **@vercel/analytics** | 2.0.1 | Vercel Web Analytics: pagine viste, visitatori, provenienza e dispositivi, senza cookie. Il componente `<Analytics />` sta in `layout.tsx`; i dati si leggono nella scheda Analytics del progetto su Vercel. |
 | **next/font** (Google Fonts) | incluso in Next | Carica **Poppins** (titoli e testi) e **Roboto Mono** (menu e testi "in codice") senza richieste esterne a runtime. |
 | **ESLint** + eslint-config-next | 9.39.5 / 16.4.2 | Controllo statico del codice (`npm run lint`), con le regole di Next per Core Web Vitals e TypeScript. |
@@ -62,8 +63,9 @@ src/
 ├─ components/
 │  ├─ sections/                  ← una sezione della home per file (Server Components)
 │  │  ├─ hero.tsx · expertise.tsx · projects.tsx · ai.tsx · experience.tsx · contact.tsx
-│  ├─ ui/                        ← componenti shadcn (button, sheet, badge, card, separator)
-│  ├─ site-header.tsx · header-shell.tsx · mobile-nav.tsx   ← header e menu
+│  ├─ ui/                        ← componenti shadcn (button, sheet, badge, card, separator) e comet-card di Aceternity
+│  ├─ site-header.tsx · header-shell.tsx · mobile-nav.tsx   ← header e menu, con il sottomenu
+│  ├─ certification-card.tsx     ← scheda di un badge Credly (dentro la Comet Card)
 │  ├─ section.tsx                ← contenitore comune delle sezioni e titolo
 │  ├─ reveal.tsx                 ← dissolvenza all'ingresso nello schermo
 │  ├─ hero-waves.tsx             ← nastro animato della hero: crea il canvas e avvia il worker
@@ -85,10 +87,12 @@ src/
 
 public/                          ← file serviti così come sono
 ├─ pesso.jpg                     ← foto della hero
+├─ certifications/*.png          ← immagini dei badge Credly
 ├─ projects/portfolio-desktop.png, portfolio-mobile.png   ← copertine della scheda progetto
 └─ projects/portfolio/*.png      ← galleria della pagina del portfolio e schermata del form (form-contatti.png)
 
 docs/                            ← documenti di progetto (uno per funzionalità)
+├─ Istruzioni inserimento Credenziali.md   ← come aggiungere un badge Credly
 └─ Informazioni_progetto_stack/  ← questo documento
 references/                      ← materiale di riferimento, solo in locale
 next.config.ts · tsconfig.json · eslint.config.mjs · components.json · package.json
@@ -110,7 +114,10 @@ Next.js con l'App Router distingue due tipi di componenti:
   - `reveal`: osserva quando un elemento entra nello schermo;
   - `project-grid`: filtri;
   - `copy-email-button`: appunti;
-  - `contact-form`: stato, controllo dei campi e invio del form di contatto.
+  - `contact-form`: stato, controllo dei campi e invio del form di contatto;
+  - `ui/comet-card`: inclinazione e riflessi della scheda dei badge, che segue il mouse.
+
+`certification-card.tsx` resta un Server Component: passa immagine, testi e link come `children` alla `CometCard`.
 
 All'avvio React "idrata" la pagina: collega il JavaScript all'HTML già pronto. Finché non idrata, le animazioni, il menu e le sezioni con `Reveal` non partono. Senza JavaScript, `Reveal` lascia comunque il contenuto visibile.
 
@@ -151,9 +158,9 @@ Mostra `SiteHeader` e, in ordine, `Hero`, `Expertise`, `Projects`, `Ai`, `Experi
   - `scroll-smooth` dà lo scorrimento morbido verso le ancore; `data-scroll-behavior="smooth"` lo disattiva nei cambi di pagina.
   - Mostra `CustomCursor` su tutte le pagine.
   - Monta `<Analytics />` di `@vercel/analytics/next`, che registra ogni pagina vista, anche nella navigazione lato client verso `/progetti/<id>`. Raccoglie dati solo in produzione su Vercel, con Analytics abilitato nella dashboard; in sviluppo scrive gli eventi nella console del browser.
-- **`site-header.tsx`**: il menu desktop, centrato, con «// home», «// competenze»… e il numero in apice, generati da `navItems` di `site.ts`. Su mobile mostra solo `MobileNav`.
+- **`site-header.tsx`**: il menu desktop, centrato, con «// home», «// competenze»… e il numero in apice, generati da `navItems` di `site.ts`. Una voce con `children` ha un sottomenu (oggi «// certificazioni» sotto «// competenze»): un pannello che si apre solo con CSS (`group-hover` e `group-focus-within`), passando con il mouse o arrivando sulla voce con il Tab. In apertura la `visibility` cambia subito, senza transizione, così il Tab successivo entra nel sottomenu. Su mobile mostra solo `MobileNav`.
 - **`header-shell.tsx`** (client): l'header fisso. È trasparente sopra la hero e, dopo 24 px di scorrimento, prende lo sfondo della pagina con sfocatura (`data-scrolled`).
-- **`mobile-nav.tsx`** (client): il pulsante «Apri menu» apre un pannello laterale (`ui/sheet`, basato su Base UI). Cliccando un link il pannello si chiude.
+- **`mobile-nav.tsx`** (client): il pulsante «Apri menu» apre un pannello laterale (`ui/sheet`, basato su Base UI). Cliccando un link il pannello si chiude. Le voci del sottomenu compaiono rientrate sotto la voce principale, senza numero.
 - **`section.tsx`**: `Section`, il contenitore di ogni sezione, e `SectionTitle`, il titolo centrato.
 - **`custom-cursor.tsx`** (client): il cerchio azzurro che segue il mouse con un leggero ritardo. Usa `requestAnimationFrame`, compare solo con mouse o trackpad e senza ritardo se è attivo il movimento ridotto.
 - **`reveal.tsx`** (client): dissolvenza dal basso quando l'elemento entra nello schermo. Usa `IntersectionObserver` e imposta `data-reveal="shown"`; gli stili sono in `globals.css`.
@@ -180,7 +187,13 @@ Mostra `SiteHeader` e, in ordine, `Hero`, `Expertise`, `Projects`, `Ai`, `Experi
 - **Indicatore di scorrimento:** il mouse stilizzato in basso, che porta a `#expertise`.
 
 ### Competenze: `sections/expertise.tsx`
-Le tre aree di competenza (Sviluppo Web, Database, Sistemi e reti), con le icone lucide `Monitor`, `Database` e `Network`, e un frammento di codice decorativo. I dati stanno in `expertise` di `site.ts`.
+Le tre aree di competenza (Sviluppo Web, Database, Sistemi e reti), con le icone lucide `Monitor`, `Database` e `Network`. I dati stanno in `expertise` di `site.ts`.
+
+Sotto il riquadro c'è la sottocategoria **Certificazioni** (`#certifications`, voce del sottomenu): titolo, una riga di testo e i badge Credly di `certifications`. Stanno in un `flex-wrap` centrato largo al massimo `59rem`, quindi al massimo tre per riga; dal quarto si va a capo e la riga incompleta resta centrata. Su tablet ne stanno due per riga, su telefono uno. Ogni badge è un `CertificationCard`: l'immagine con `next/image`, nome, ente e data in Roboto Mono, e un link alla pagina pubblica su Credly, in una nuova scheda.
+
+La scheda è la **Comet Card** di Aceternity UI (`ui/comet-card.tsx`, dal registro `@aceternity` in `components.json`). Segue il mouse inclinandosi in 3D e si ingrandisce un po'. Al passaggio del mouse compaiono il riflesso bianco originale e, con la prop `foil`, un riflesso cromatico: fasce iridescenti in `repeating-linear-gradient` con `mix-blend-color-dodge`, che scorrono dentro una maschera radiale centrata sul cursore. A riposo il badge ha i suoi colori. Con la tastiera la scheda ha un bordo ciano e si ingrandisce. Con movimento ridotto resta ferma: la struttura è la stessa, ma i gestori del mouse e `whileHover` non fanno nulla. Non c'è un ramo statico a parte perché `useReducedMotion()` vale `null` sul server, e il ramo diverso causerebbe un errore di idratazione.
+
+Senza badge la sottocategoria non compare, e al suo posto torna il frammento di codice decorativo (`CodeFragment`) sotto il riquadro.
 
 ### Progetti: `sections/projects.tsx`, `project-grid.tsx`, `project-cover.tsx`
 
@@ -219,7 +232,7 @@ Due colonne, una sotto l'altra su mobile. A sinistra il titolo, il testo, l'emai
 - **Stati:** «Invio in corso…» con il tasto disattivato; poi la conferma «Messaggio inviato», che riceve il focus e ha «Scrivi un altro messaggio», oppure un avviso `role="alert"` sopra i campi, con i dati che restano compilati. Senza chiave il form mostra l'avviso e la console spiega il motivo.
 
 ### Componenti UI (`components/ui/`, generati da shadcn)
-`button` e `sheet` sono usati dal menu mobile. `badge`, `card` e `separator` sono presenti ma oggi non usati. Importano `cn` direttamente da `"cn"`, come li genera la CLI.
+`button` e `sheet` sono usati dal menu mobile. `badge`, `card` e `separator` sono presenti ma oggi non usati. Importano `cn` direttamente da `"cn"`, come li genera la CLI. `comet-card` arriva dal registro di Aceternity UI (`npx shadcn add @aceternity/comet-card`) ed è stato adattato: `cn` da `"cn"`, riflessi solo al passaggio del mouse, prop `foil` e movimento ridotto. I valori da regolare sono `glareOpacity`, `foilOpacity`, `foilMask` e `FOIL_GRADIENT`, più `rotateDepth` e `translateDepth` come props.
 
 ---
 
@@ -228,10 +241,12 @@ Due colonne, una sotto l'altra su mobile. A sinistra il titolo, il testo, l'emai
 | Oggetto | Contenuto |
 | --- | --- |
 | `site` | Nome, ruolo, città, email, foto, descrizione, link social (un link vuoto nasconde l'icona) |
-| `navItems` | Voci del menu: etichetta e ancora `/#id` |
+| `certifications` | Badge Credly: nome, ente, data, immagine e link. Sta in cima al file perché da questo elenco dipende anche la voce del sottomenu |
+| `navItems` | Voci del menu: etichetta, ancora `/#id` ed eventuale sottomenu (`children`) |
 | `hero` | Sottotitolo, etichetta ed elenco delle tecnologie della riga che scorre |
 | `about` | Presentazione estesa, oggi non mostrata |
 | `expertise` | Le tre aree di competenza |
+| `certificationsSection` | Titolo e testo introduttivo delle Certificazioni, etichetta del link per i lettori di schermo |
 | `projectsSection` | Titolo, introduzione, filtri, «Apri progetto», `showPlaceholders` |
 | `projects` | Elenco dei progetti: `id`, titolo, categoria, dimensione, immagine e `details` (descrizione, cliente, tecnologie, `url`, galleria) |
 | `projectPage` | Testi fissi della pagina del progetto e della barra «Progetto successivo» |
@@ -318,7 +333,9 @@ Non ci sono test automatici: le verifiche si fanno con lint, tipi e controllo ne
 | Impostare la chiave del form | `.env.local` (e le variabili d'ambiente dell'hosting) | `NEXT_PUBLIC_WEB3FORMS_KEY=b9ec21fe-706d-49c3-9902-7079ed47e149` (la chiave è anche nella sezione Contatti). Il server di sviluppo ricarica `.env.local` da solo; per la produzione va rifatta la build |
 | Cambiare i colori del sito | `globals.css` → `:root` | Modificare le variabili |
 | Cambiare la forma del nastro della hero | `src/lib/hero-waves.ts` | Modificare `CONTROL_POINTS`; numero di linee, colori e velocità sono nelle costanti accanto (`LINES`, `COLORS`, `TWIST_SPEED`) |
-| Aggiungere una voce al menu | `site.ts` → `navItems` e una sezione con lo stesso `id` | L'ancora deve corrispondere all'`id` di `Section` |
+| Aggiungere una voce al menu | `site.ts` → `navItems` e una sezione con lo stesso `id` | L'ancora deve corrispondere all'`id` di `Section`. Per un sottomenu si usa `children` della voce |
+| Aggiungere un badge Credly | `public/certifications/` e `site.ts` → `certifications` | Vedi `docs/Istruzioni inserimento Credenziali.md` |
+| Regolare le animazioni della scheda dei badge | `src/components/ui/comet-card.tsx` | `foilOpacity` e `foilMask` (foil), `glareOpacity` (riflesso bianco), `FOIL_GRADIENT` (colori), props `rotateDepth` e `translateDepth` |
 | Aggiungere la sezione «In evidenza» a un progetto | `site.ts` → `details.highlight` del progetto | Compilare i campi di `ProjectHighlight`; la schermata va in `public/projects/<id>/` |
 | Aggiungere un componente UI | Terminale | `npx shadcn add <nome>` |
 | Vedere le visite al sito | Dashboard Vercel → progetto → Analytics | Nessun file da toccare; se non arrivano dati, controllare che Analytics sia abilitato e che nella scheda Network del sito in produzione la richiesta `POST …/view` (percorso offuscato, vedi «Web Analytics» nella sezione 9) risponda 200 |
@@ -333,6 +350,7 @@ Una riga per commit, dal più recente. Per i dettagli di ogni funzionalità c'è
 
 | Data | Commit | Modifica | Documento |
 | --- | --- | --- | --- |
+| 2026-11-04 | `c0d74e2` | Certificazioni in Competenze: badge Credly in Comet Card di Aceternity UI con riflesso foil, tre per riga; sottomenu «certificazioni»; `motion`; istruzioni in `Istruzioni inserimento Credenziali.md` | `2026-11-04-certificazioni-comet-card.md` |
 | 2026-10-26 | `5870310` | Vercel Web Analytics: `@vercel/analytics` e `<Analytics />` nel layout | `2026-10-26-vercel-web-analytics.md` |
 | 2026-10-23 | `27ae2bd` | Nuovo testo sotto «Scrivimi un messaggio»; schermata del form rifatta | — |
 | 2026-10-23 | `0ae057d` | Sito pubblicato su Vercel e collegato a GitHub; `.vercelignore`; refusi nei testi di `site.ts` | — |

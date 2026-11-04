@@ -19,11 +19,42 @@ export const site = {
   },
 };
 
-// Il numero in apice (01, 02, …) segue l'ordine dell'elenco.
+// Badge Credly della sottocategoria «Certificazioni» in Competenze: l'immagine va in
+// public/certifications/, il link è la pagina pubblica del badge. Sta qui in alto perché
+// anche il menu ne dipende: con l'elenco vuoto spariscono sia i badge sia la voce del sottomenu.
+export type Certification = {
+  name: string;
+  issuer: string;
+  date: string;
+  image: string;
+  url: string;
+};
+
+export const certifications: Certification[] = [
+  {
+    name: "IBM Z Xplore - Concepts",
+    issuer: "IBM",
+    date: "3 novembre 2026",
+    image: "/certifications/ibm-z-xplore-concepts.png",
+    url: "https://www.credly.com/badges/f4aea1d0-bdf9-4790-86a3-9e95697bf26b/public_url",
+  },
+];
+
+export type NavLink = { label: string; href: string };
+
+// `children` è il sottomenu della voce: su desktop si apre al passaggio del mouse o con il Tab
+export type NavItem = NavLink & { children?: NavLink[] };
+
+// Il numero in apice (01, 02, …) segue l'ordine dell'elenco; le voci del sottomenu non hanno numero.
 // La "/" iniziale fa funzionare il menu anche dalle pagine dei progetti.
-export const navItems = [
+export const navItems: NavItem[] = [
   { label: "home", href: "/#home" },
-  { label: "competenze", href: "/#expertise" },
+  {
+    label: "competenze",
+    href: "/#expertise",
+    // Compare solo se c'è almeno un badge in `certifications`
+    children: certifications.length ? [{ label: "certificazioni", href: "/#certifications" }] : undefined,
+  },
   { label: "progetti", href: "/#projects" },
   { label: "AI", href: "/#ai" },
   { label: "esperienza", href: "/#experience" },
@@ -84,6 +115,14 @@ export const expertise = {
     },
   ] satisfies ExpertiseItem[],
 };
+
+// Testi della sottocategoria «Certificazioni» (i badge sono in `certifications`, in alto)
+export const certificationsSection = {
+  title: "Certificazioni",
+  intro: "I badge che ho ottenuto con i corsi di certificazione, verificabili su Credly.",
+  linkLabel: (name: string) => `${name}, badge Credly (si apre in una nuova scheda)`,
+};
+
 
 export type ProjectCategory = "Web app" | "App";
 

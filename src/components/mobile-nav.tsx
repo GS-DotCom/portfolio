@@ -42,6 +42,21 @@ export function MobileNav() {
                     {String(index + 1).padStart(2, "0")}
                   </span>
                 </a>
+                {item.children && (
+                  <ol className="-mt-1 flex flex-col pb-3 pl-6">
+                    {item.children.map((child) => (
+                      <li key={child.href}>
+                        <a
+                          href={child.href}
+                          onClick={() => setOpen(false)}
+                          className="block py-2 font-mono text-sm font-semibold text-muted-foreground transition-colors hover:text-cyan"
+                        >
+                          {`// ${child.label}`}
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                )}
               </li>
             ))}
           </ol>
