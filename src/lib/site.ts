@@ -38,6 +38,13 @@ export const certifications: Certification[] = [
     image: "/certifications/ibm-z-xplore-concepts.png",
     url: "https://www.credly.com/badges/f4aea1d0-bdf9-4790-86a3-9e95697bf26b/public_url",
   },
+  {
+    name: "IBM Z Xplore - Advanced",
+    issuer: "IBM",
+    date: "5 novembre 2026",
+    image: "/certifications/ibm-z-xplore-advanced.png",
+    url: "https://www.credly.com/badges/d5401918-24e6-4306-a127-18e6627b78b4/public_url",
+  },
 ];
 
 export type NavLink = { label: string; href: string };
