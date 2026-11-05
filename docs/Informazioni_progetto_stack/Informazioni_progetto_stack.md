@@ -4,7 +4,7 @@ Documento di riferimento del portfolio: le tecnologie usate, come funziona ogni 
 
 **Va aggiornato dopo ogni commit** (regola in `CLAUDE.md`): si aggiornano le sezioni che cambiano e si aggiunge una riga al [registro delle modifiche](#registro-delle-modifiche).
 
-Ultimo aggiornamento: 2026-11-04, dopo il commit `c0d74e2`.
+Ultimo aggiornamento: 2026-11-05, dopo il commit `aa1c470`.
 
 ---
 
@@ -350,6 +350,7 @@ Una riga per commit, dal più recente. Per i dettagli di ogni funzionalità c'è
 
 | Data | Commit | Modifica | Documento |
 | --- | --- | --- | --- |
+| 2026-11-05 | `aa1c470` | Nuovo badge Credly «IBM Z Xplore - Advanced» in `certifications` di `site.ts`, immagine in `public/certifications/` | — |
 | 2026-11-04 | `c0d74e2` | Certificazioni in Competenze: badge Credly in Comet Card di Aceternity UI con riflesso foil, tre per riga; sottomenu «certificazioni»; `motion`; istruzioni in `Istruzioni inserimento Credenziali.md` | `2026-11-04-certificazioni-comet-card.md` |
 | 2026-10-26 | `5870310` | Vercel Web Analytics: `@vercel/analytics` e `<Analytics />` nel layout | `2026-10-26-vercel-web-analytics.md` |
 | 2026-10-23 | `27ae2bd` | Nuovo testo sotto «Scrivimi un messaggio»; schermata del form rifatta | — |
