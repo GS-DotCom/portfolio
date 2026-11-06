@@ -45,6 +45,13 @@ export const certifications: Certification[] = [
     image: "/certifications/ibm-z-xplore-advanced.png",
     url: "https://www.credly.com/badges/d5401918-24e6-4306-a127-18e6627b78b4/public_url",
   },
+  {
+    name: "Prompt Design in Vertex AI Skill Badge",
+    issuer: "Google",
+    date: "6 novembre 2026",
+    image: "/certifications/prompt-design-in-vertex-ai-skill-badge.png",
+    url: "https://www.credly.com/badges/68a55dae-bc28-4c15-a76e-8537a19a579d/public_url",
+  },
 ];
 
 export type NavLink = { label: string; href: string };
